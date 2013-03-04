@@ -7,18 +7,11 @@ import slick.session.Session
 import com.google.inject.{Inject, Singleton}
 import Schema._
 
-case class DecisionDTO(code: String, id: String)
-
 @Singleton
 class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
   val table = Decisions.tableName
 
-  Schema.createTables
+  def insert(dto: DecisionDTO)(implicit session: Session) = Decisions.insert(dto)
 
-  implicit def getEntityResult = GetResult(r => DecisionDTO(r.<<, r.<<))
-
-  def insert(dto: DecisionDTO) = Decisions.insert(dto)
-
-  def findById(id: String) = Decisions.filter(_.id === id).elements.toSet.headOption
-
+  def findById(id: String)(implicit session: Session) = Decisions.filter(_.id === id).elements.toSet.headOption
 }

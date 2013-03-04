@@ -8,23 +8,24 @@ import slick.session.Session
 import collection.mutable.ListBuffer
 
 object Schema {
-  object Decisions extends Table[DecisionDTO]("DECISIONS") {
-    def code = column[String]("CODE")
+  case class DecisionDTO(user: String, id: String)
 
+  object Decisions extends Table[DecisionDTO]("DECISIONS") {
+    def user = column[String]("USER")
     def id = column[String]("ID", O.PrimaryKey)
 
-    def * = code ~ id <> (DecisionDTO, DecisionDTO.unapply _)
+    //def owner = foreignKey("DECISION_USER", user, Users)(_.id)
 
-    def idx = index("idx_decisions", (code), unique = true)
+    def * = user ~ id <> (DecisionDTO, DecisionDTO.unapply _)
   }
 
-  case class User(id: String, name: String)
+  case class UserDTO(id: String, name: String)
 
-  object Users extends Table[User]("users") {
+  object Users extends Table[UserDTO]("USERS") {
     def id = column[String]("ID", O.PrimaryKey)
     def name = column[String]("NAME")
-    def idx = index("idx_username", (name), unique = true)
-    def * = id ~ name <> (User, User.unapply _)
+    //def idx = index("idx_username", (name), unique = true)
+    def * = id ~ name <> (UserDTO, UserDTO.unapply _)
   }
 
   def createTables(implicit session: Session) {
@@ -38,8 +39,8 @@ object Schema {
 
     val tableNames = names.toList
     try {
+      if (!tableNames.contains(Users.tableName)) Users.ddl.create
       if (!tableNames.contains(Decisions.tableName)) Decisions.ddl.create
-
     } catch {
       case ex: Exception => throw new RuntimeException("Unable to create tables for database " + session.metaData.getURL(), ex)
     }
