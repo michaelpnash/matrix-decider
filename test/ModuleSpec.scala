@@ -1,12 +1,13 @@
 
 import model.datastore.DecisionDataStore
-import org.specs2.mutable.Specification
+import org.scalatest.FreeSpec
 
-class ModuleSpec extends Specification {
-  "the module" should {
+class ModuleSpec extends FreeSpec {
+  "the module" - {
     "produce a singleton for the decision data store" in {
-      Global.injector.getInstance(classOf[DecisionDataStore])
-      0 must equalTo(0)
+
+      assert(Global.injector.getInstance(classOf[DecisionDataStore]) eq Global.injector.getInstance(classOf[DecisionDataStore]))
+
     }
   }
 }
