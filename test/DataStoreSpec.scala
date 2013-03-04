@@ -7,6 +7,8 @@ class DataStoreSpec extends FreeSpec {
     "insert and retrieve a decision DTO" in {
       val dto = DecisionDTO("foo", "bar")
       dataStore.insert(dto)
+      val found = dataStore.findById(dto.id)
+      assert(found.get === dto)
     }
     "list all stored decision DTOs for a specified user" in (pending)
   }

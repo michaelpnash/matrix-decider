@@ -17,6 +17,8 @@ class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
 
   implicit def getEntityResult = GetResult(r => DecisionDTO(r.<<, r.<<))
 
-  def insert(dto: DecisionDTO) = Decisions.insert(dto.code, dto.id)
+  def insert(dto: DecisionDTO) = Decisions.insert(dto)
+
+  def findById(id: String) = Decisions.filter(_.id === id).elements.toSet.headOption
 
 }
