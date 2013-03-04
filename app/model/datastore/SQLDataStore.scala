@@ -6,7 +6,7 @@ import slick.jdbc.StaticQuery
 
 trait SQLDataStore[T <: {def id : String}] {
 
-  val dbUrl = ""
+  val dbUrl = "jdbc:hsqldb:mem:test"
 
   implicit val session: scala.slick.session.Session =
     Database.forURL(dbUrl, driver = "org.hsqldb.jdbc.JDBCDriver").createSession

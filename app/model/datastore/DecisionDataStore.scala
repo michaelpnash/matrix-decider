@@ -13,6 +13,10 @@ case class DecisionDTO(code: String, id: String)
 class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
   val table = Decisions.tableName
 
+  Schema.createTables
+
   implicit def getEntityResult = GetResult(r => DecisionDTO(r.<<, r.<<))
+
+  def insert(dto: DecisionDTO) = Decisions.insert(dto.code, dto.id)
 
 }
