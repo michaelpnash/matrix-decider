@@ -18,13 +18,13 @@ object Schema {
     def idx = index("idx_decisions", (code), unique = true)
   }
 
-  case class User(id: Option[Int], first: String, last: String)
+  case class User(id: String, name: String)
 
   object Users extends Table[User]("users") {
-    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    def first = column[String]("first")
-    def last = column[String]("last")
-    def * = id.? ~ first ~ last <> (User, User.unapply _)
+    def id = column[String]("ID", O.PrimaryKey)
+    def name = column[String]("NAME")
+    def idx = index("idx_username", (name), unique = true)
+    def * = id ~ name <> (User, User.unapply _)
   }
 
   def createTables(implicit session: Session) {
