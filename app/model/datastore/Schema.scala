@@ -10,6 +10,15 @@ import collection.mutable.ListBuffer
 object Schema {
   case class DecisionDTO(user: String, id: String)
 
+  case class UserDTO(id: String, name: String)
+
+   object Users extends Table[UserDTO]("USERS") {
+     def id = column[String]("ID", O.PrimaryKey)
+     def name = column[String]("NAME")
+     //def idx = index("idx_username", (name), unique = true)
+     def * = id ~ name <> (UserDTO, UserDTO.unapply _)
+   }
+
   object Decisions extends Table[DecisionDTO]("DECISIONS") {
     def user = column[String]("USER")
     def id = column[String]("ID", O.PrimaryKey)
@@ -17,15 +26,6 @@ object Schema {
     //def owner = foreignKey("DECISION_USER", user, Users)(_.id)
 
     def * = user ~ id <> (DecisionDTO, DecisionDTO.unapply _)
-  }
-
-  case class UserDTO(id: String, name: String)
-
-  object Users extends Table[UserDTO]("USERS") {
-    def id = column[String]("ID", O.PrimaryKey)
-    def name = column[String]("NAME")
-    //def idx = index("idx_username", (name), unique = true)
-    def * = id ~ name <> (UserDTO, UserDTO.unapply _)
   }
 
   def createTables(implicit session: Session) {
