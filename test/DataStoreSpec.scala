@@ -33,6 +33,18 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should throw an exception when asked to insert a decision for a user that does not exist" in {
       intercept[Exception] { decisionDataStore.insert(DecisionDTO("not there", "foo")) }
     }
-    "should list all stored decision DTOs for a specified user id" in (pending)
+    "should list all stored decision DTOs for a specified user id" in {
+      val user = UserDTO("foo", "name")
+      val wrongUser = UserDTO("wrong", "name")
+      userDataStore.insert(user)
+      userDataStore.insert(wrongUser)
+      val dto1 = DecisionDTO(user.id, "foo")
+      val dto2 = DecisionDTO(user.id, "bar")
+      val wrongDto = DecisionDTO(wrongUser.id, "baz")
+      decisionDataStore.insert(dto1)
+      decisionDataStore.insert(dto2)
+      decisionDataStore.insert(wrongDto)
+      assert(decisionDataStore.findForUser(user.id) === Seq(dto1, dto2))
+    }
   }
 }
