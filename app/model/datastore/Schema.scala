@@ -8,7 +8,6 @@ import slick.session.Session
 import collection.mutable.ListBuffer
 
 object Schema {
-  case class DecisionDTO(user: String, id: String)
 
   case class UserDTO(id: String, name: String)
 
@@ -17,15 +16,19 @@ object Schema {
      def name = column[String]("NAME")
      //def idx = index("idx_username", (name), unique = true)
      def * = id ~ name <> (UserDTO, UserDTO.unapply _)
+
+     //def dec = foreignKey("USR", id, Decisions)(_.userId)
    }
 
+  case class DecisionDTO(user: String, id: String)
+
   object Decisions extends Table[DecisionDTO]("DECISIONS") {
-    def user = column[String]("USER")
+    def userId = column[String]("USER_ID")
     def id = column[String]("ID", O.PrimaryKey)
 
-    //def owner = foreignKey("DECISION_USER", user, Users)(_.id)
+    def owner = foreignKey("DEC", userId, Users)(_.id)
 
-    def * = user ~ id <> (DecisionDTO, DecisionDTO.unapply _)
+    def * = userId ~ id <> (DecisionDTO, DecisionDTO.unapply _)
   }
 
   def createTables(implicit session: Session) {

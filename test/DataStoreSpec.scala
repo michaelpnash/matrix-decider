@@ -9,8 +9,8 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
   val decisionDataStore = Global.injector.getInstance(classOf[DecisionDataStore])
 
   before {
-    userDataStore.clear
     decisionDataStore.clear
+    userDataStore.clear
   }
 
   "The user data store" - {
@@ -29,6 +29,9 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
       decisionDataStore.insert(dto)
       val found = decisionDataStore.findById(dto.id)
       assert(found.get === dto)
+    }
+    "should throw an exception when asked to insert a decision for a user that does not exist" in {
+      intercept[Exception] { decisionDataStore.insert(DecisionDTO("not there", "foo")) }
     }
     "should list all stored decision DTOs for a specified user id" in (pending)
   }
