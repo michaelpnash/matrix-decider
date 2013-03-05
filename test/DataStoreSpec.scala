@@ -19,7 +19,10 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
       userDataStore.insert(user)
       assert(userDataStore.findById(user.id).get === user)
     }
-    "should not insert a new user with the same name as an existing user" in (pending)
+    "should not insert a new user with the same name as an existing user" in {
+      userDataStore.insert(UserDTO("id", "name"))
+      intercept[Exception] { userDataStore.insert(UserDTO("id-other", "name")) }
+    }
   }
   "The decision data store" - {
     "should insert and retrieve a decision DTO" in {
@@ -35,7 +38,7 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     }
     "should list all stored decision DTOs for a specified user id" in {
       val user = UserDTO("foo", "name")
-      val wrongUser = UserDTO("wrong", "name")
+      val wrongUser = UserDTO("wrong", "wrong name")
       userDataStore.insert(user)
       userDataStore.insert(wrongUser)
       val dto1 = DecisionDTO(user.id, "foo")

@@ -14,10 +14,8 @@ object Schema {
    object Users extends Table[UserDTO]("USERS") {
      def id = column[String]("ID", O.PrimaryKey)
      def name = column[String]("NAME")
-     //def idx = index("idx_username", (name), unique = true)
+     def idx = index("idx_username", (name), unique = true)
      def * = id ~ name <> (UserDTO, UserDTO.unapply _)
-
-     //def dec = foreignKey("USR", id, Decisions)(_.userId)
    }
 
   case class DecisionDTO(user: String, id: String)
