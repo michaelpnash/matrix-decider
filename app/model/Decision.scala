@@ -4,6 +4,7 @@ import java.util.UUID
 
 case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Criteria], id: UUID = UUID.randomUUID) {
   def alternativesByPreference = alternatives
+  alternatives.foreach(alt => require(criteria == alt.rankings.map(_.criteria), "Alternative " + alt + " does not have the correct criteria"))
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)
