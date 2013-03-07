@@ -25,7 +25,7 @@ object Schema {
     def userId = column[String]("USER_ID")
     def id = column[String]("ID", O.PrimaryKey)
 
-    def owner = foreignKey("DEC", userId, Users)(_.id)
+    def owner = foreignKey("DECISION_USER", userId, Users)(_.id)
 
     def * = userId ~ id <> (DecisionDTO, DecisionDTO.unapply _)
   }
