@@ -4,7 +4,7 @@ import slick.session._
 import collection.mutable.ListBuffer
 import slick.jdbc.StaticQuery
 
-trait SQLDataStore[T <: {def id : String}] {
+trait SQLDataStore[T] {
 
   def tables(implicit session: Session): List[String] = {
     val names = ListBuffer[String]()
