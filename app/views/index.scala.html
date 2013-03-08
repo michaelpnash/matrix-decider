@@ -1,4 +1,6 @@
-@()(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(loginForm: play.api.data.Form[controllers.LoginView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+
+@import helper._
 
 @main {
 
@@ -13,5 +15,13 @@
         even an email address, but make sure you remember it. </p>
         <p>There is no security on your decisions for this version, so proceed
         at your own risk.</p>
+
+@form(routes.Decisions.list) {
+    @inputText(loginForm("username"))
+    <div class="form-actions">
+      <button type="submit" name="action" class="btn btn-primary" value="login" title="Log in to Matrix-Decider">
+        @Messages("login")
+      </button>
+</div> }
 
 }
