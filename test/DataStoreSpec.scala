@@ -1,6 +1,6 @@
 import java.util.UUID
-import model.datastore.{CriteriaDataStore, UserDataStore, DecisionDataStore}
-import model.datastore.Schema.{CriteriaDTO, UserDTO, DecisionDTO}
+import model.datastore.{AlternativeDataStore, CriteriaDataStore, UserDataStore, DecisionDataStore}
+import model.datastore.Schema.{AlternativeDTO, CriteriaDTO, UserDTO, DecisionDTO}
 import org.scalatest.{BeforeAndAfter, FreeSpec}
 import scala.slick.session.Session
 
@@ -9,8 +9,10 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
   val userDataStore = Global.injector.getInstance(classOf[UserDataStore])
   val decisionDataStore = Global.injector.getInstance(classOf[DecisionDataStore])
   val criteriaDataStore = Global.injector.getInstance(classOf[CriteriaDataStore])
+  val alternativeDataStore = Global.injector.getInstance(classOf[AlternativeDataStore])
 
   before {
+    alternativeDataStore.clear
     criteriaDataStore.clear
     decisionDataStore.clear
     userDataStore.clear
@@ -27,6 +29,30 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
       intercept[Exception] {
         userDataStore.insert(UserDTO("id-other", "name"))
       }
+    }
+  }
+  "The alternative data store" - {
+    "should insert and retrieve an alternative DTO by id" in {
+      val user = UserDTO("foo", "name")
+      userDataStore.insert(user)
+      val decisionDto = DecisionDTO(user.id, "bar")
+      decisionDataStore.insert(decisionDto)
+      val alternative = AlternativeDTO("name", decisionDto.id, UUID.randomUUID.toString)
+      alternativeDataStore.insert(alternative)
+      assert(alternativeDataStore.findById(alternative.id).get === alternative)
+    }
+    "should find all alternatives for a specified decision" in {
+      val user = UserDTO("foo", "name")
+      userDataStore.insert(user)
+      val decisionDto = DecisionDTO(user.id, "bar")
+      decisionDataStore.insert(decisionDto)
+      val wrongDecision = DecisionDTO(user.id, "wrong")
+      decisionDataStore.insert(wrongDecision)
+      val alternative1 = AlternativeDTO("name 1", decisionDto.id, UUID.randomUUID.toString)
+      val alternative2 = AlternativeDTO("name 2", decisionDto.id, UUID.randomUUID.toString)
+      val wrongAlternative = AlternativeDTO("wrong", wrongDecision.id, UUID.randomUUID.toString)
+      List(alternative1, alternative2, wrongAlternative).foreach(alternativeDataStore.insert(_))
+      assert(alternativeDataStore.findByDecisionId(decisionDto.id).toSet === Set(alternative1, alternative2))
     }
   }
   "The criteria data store" - {
