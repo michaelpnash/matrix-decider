@@ -2,14 +2,15 @@ package model
 
 import java.util.UUID
 import com.google.inject.{Inject, Singleton}
-import model.datastore.DecisionDataStore
-import model.datastore.Schema.DecisionDTO
+import model.datastore.{AlternativeDataStore, DecisionDataStore}
+import model.datastore.Schema.{AlternativeDTO, DecisionDTO}
 import scala.slick.session.Session
 
 @Singleton
-class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, implicit val session: Session) {
+class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alternativeDataStore: AlternativeDataStore, implicit val session: Session) {
   def findById(id: UUID): Option[Decision] = {
-    decisionDataStore.findById(id.toString).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), Set(), Set(), UUID.fromString(dto.id)))
+    val alternatives = alternativeDataStore.findByDecisionId(id.toString).map(_.asInstanceOf[AlternativeDTO]).map(dto => Alternative(dto.name, Set(), UUID.fromString(dto.id)))
+    decisionDataStore.findById(id.toString).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, Set(), UUID.fromString(dto.id)))
   }
   def save(decision: Decision): Decision = {
     decisionDataStore.insert(DecisionDTO(decision.user.id.toString, decision.id.toString))
