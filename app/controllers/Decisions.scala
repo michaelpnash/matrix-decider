@@ -6,15 +6,17 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, longNumber, nonEmptyText}
 import play.api.i18n.Messages
 import com.google.inject.{Inject, Singleton}
-import model.{UserRepository, Decision, DecisionRepository}
+import model.{Alternative, UserRepository, Decision, DecisionRepository}
 import java.util.UUID
+import model.datastore.AlternativeDataStore
+import scala.slick.session.Database
 
 case class DecisionView(name: String)
 case class AlternativeView(name: String)
 case class CriteriaView(name: String)
 
 @Singleton
-class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
+class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
 
    private val decisionForm: Form[DecisionView] = Form(
     mapping(
@@ -74,10 +76,8 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
           BadRequest(views.html.decision(decision, alternativeForm, formWithErrors))
         },
         alternativeView => {
-          //update decision
-          val existing = decisionRepository.findById(decisionId).get
-          decisionRepository.save(existing)
-          Ok(views.html.decision(decision, alternativeForm, criteriaForm))
+          val newDecision = decisionRepository.findById(decisionId).get.withNewAlternative(Alternative(alternativeView.name, Set()))
+          Ok(views.html.decision(newDecision, alternativeForm, criteriaForm))
         }
       )
   }

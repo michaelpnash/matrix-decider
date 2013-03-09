@@ -8,7 +8,7 @@ import org.scalatest.{BeforeAndAfter, FreeSpec}
 import scala.slick.session.Database
 
 class ModelSpec extends FreeSpec with BeforeAndAfter {
-  val repo = Global.injector.getInstance(classOf[DecisionRepository])
+  implicit val repo = Global.injector.getInstance(classOf[DecisionRepository])
   val userRepo = Global.injector.getInstance(classOf[UserRepository])
   val alternativeDataStore = Global.injector.getInstance(classOf[AlternativeDataStore])
   val rankingDataStore = Global.injector.getInstance(classOf[RankingDataStore])
@@ -41,7 +41,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
           Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my name")
       val honda = Alternative("honda", Set())
-      val modified = decision.withNewAlternative(honda)(alternativeDataStore, database)
+      val modified = decision.withNewAlternative(honda)
       assert(modified.alternatives.map(_.id).contains(honda.id))
       assert(alternativeDataStore.findById(honda.id)(database.createSession).isDefined)
     }

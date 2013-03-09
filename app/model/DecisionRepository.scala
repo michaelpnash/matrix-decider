@@ -34,4 +34,9 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
   def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id).map(dto => DecisionSpecifier(dto.id, dto.name))
 
   def clear = decisionDataStore.clear
+
+  def withNewAlternative(decision: Decision, alternative: Alternative): Decision = {
+    alternativeDataStore.insert(AlternativeDTO(alternative.name, decision.id, alternative.id))
+    decision.copy(alternatives = decision.alternatives + alternative)
+}
 }
