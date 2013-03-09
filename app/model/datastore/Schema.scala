@@ -6,8 +6,6 @@ import scala.slick.jdbc.StaticQuery.interpolation
 
 import slick.session.Session
 import collection.mutable.ListBuffer
-import model.UUIDConversions
-import UUIDConversions._
 import java.util.UUID
 
 object Schema {
