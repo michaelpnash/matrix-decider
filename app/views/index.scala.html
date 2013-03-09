@@ -1,6 +1,7 @@
 @(loginForm: play.api.data.Form[controllers.LoginView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
+@import helper.twitterBootstrap._
 
 @main {
 
@@ -17,7 +18,10 @@
         at your own risk.</p>
 
 @form(routes.Application.login) {
-    @inputText(loginForm("username"))
+    <fieldset>
+        <legend>Identify Yourself</legend>
+        @inputText(loginForm("username"))
+    </fieldset>
     <div class="form-actions">
       <button type="submit" name="action" class="btn btn-primary" value="login" title="Log in to Matrix-Decider">
         @Messages("login")
