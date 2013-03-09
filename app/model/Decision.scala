@@ -3,8 +3,10 @@ package model
 import java.util.UUID
 
 case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Criteria], id: UUID = UUID.randomUUID, name: String) {
-  def alternativesByPreference = alternatives
   alternatives.foreach(alt => require(criteria == alt.rankings.map(_.criteria), "Alternative " + alt + " does not have the correct criteria"))
+  def alternativesByPreference = alternatives //TODO
+  def withNewAlternative(alternative: Alternative): Decision = this.copy(alternatives = alternatives + alternative.copy(rankings = criteria.map(Ranking(_, 0))))
+  def withNewCriteria(criteria: Criteria): Decision = this
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)
