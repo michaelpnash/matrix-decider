@@ -22,6 +22,14 @@ class ApplicationSpec extends FreeSpec {
           assert(contentAsString(home) contains ("Matrix Decider"))
         }
       }
+      "should say hello" in {
+        running(FakeApplication()) {
+          val home = route(FakeRequest(GET, "/hello")).get
+          assert(status(home) === OK)
+          assert(contentType(home) === Some("text/plain"))
+          assert(contentAsString(home) contains ("hello"))
+        }
+      }
     }
   }
 }
