@@ -16,5 +16,5 @@ class RankingDataStore @Inject()() extends SQLDataStore[RankingDTO] {
   def findByAlternativeId(id: String)(implicit session: Session) = Rankings.filter(_.alternativeId === id).to[Seq]
 
   def findByAlternativeIdAndCriteriaId(alternativeId: String, criteriaId: String)(implicit session: Session) =
-    Rankings.filter(r => r.alternativeId === alternativeId && r.criteriaId === criteriaId).firstOption
+    Rankings.filter(r => r.alternativeId === alternativeId && r.criteriaId === criteriaId).firstOption.asInstanceOf[Option[RankingDTO]]
 }
