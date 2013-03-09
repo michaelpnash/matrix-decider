@@ -16,4 +16,6 @@ class UserDataStore @Inject()(implicit val session: Session) extends SQLDataStor
   def insert(dto: UserDTO) = Users.insert(dto)
 
   def findById(id: String) = Users.filter(_.id === id).elements.toSet.headOption
+
+  def findByName(name: String) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
 }
