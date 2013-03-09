@@ -5,11 +5,12 @@ import model.datastore.Schema
 import model.Decision
 import model.User
 import org.scalatest.{BeforeAndAfter, FreeSpec}
+import scala.slick.session.Database
 
 class ModelSpec extends FreeSpec with BeforeAndAfter {
   val repo = Global.injector.getInstance(classOf[DecisionRepository])
   val userRepo = Global.injector.getInstance(classOf[UserRepository])
-  Schema.createTables(repo.session)
+  Schema.createTables(Global.injector.getInstance(classOf[Database]).createSession)
 
   before {
     repo.clear

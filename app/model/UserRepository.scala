@@ -3,11 +3,14 @@ package model
 import com.google.inject.{Inject, Singleton}
 import model.datastore.UserDataStore
 import model.datastore.Schema.UserDTO
-import scala.slick.session.Session
+import scala.slick.session.{Database, Session}
 import java.util.UUID
 
 @Singleton
-class UserRepository @Inject()(userDataStore: UserDataStore, implicit val session: Session) {
+class UserRepository @Inject()(userDataStore: UserDataStore, database: Database) {
+
+  implicit val session: Session = database.createSession
+
   def save(user: User): User = {
     userDataStore.insert(UserDTO(user.id, user.name.toString))
     user

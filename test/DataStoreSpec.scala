@@ -1,15 +1,20 @@
 import java.util.UUID
-import model.datastore.{AlternativeDataStore, CriteriaDataStore, UserDataStore, DecisionDataStore}
+import model.datastore._
+import model.datastore.Schema.AlternativeDTO
+import model.datastore.Schema.CriteriaDTO
+import model.datastore.Schema.DecisionDTO
+import model.datastore.Schema.UserDTO
 import model.datastore.Schema.{AlternativeDTO, CriteriaDTO, UserDTO, DecisionDTO}
 import org.scalatest.{BeforeAndAfter, FreeSpec}
-import scala.slick.session.Session
+import scala.slick.session.{Database, Session}
 
 class DataStoreSpec extends FreeSpec with BeforeAndAfter {
-  implicit val session = Global.injector.getInstance(classOf[Session])
+  implicit val session = Global.injector.getInstance(classOf[Database]).createSession
   val userDataStore = Global.injector.getInstance(classOf[UserDataStore])
   val decisionDataStore = Global.injector.getInstance(classOf[DecisionDataStore])
   val criteriaDataStore = Global.injector.getInstance(classOf[CriteriaDataStore])
   val alternativeDataStore = Global.injector.getInstance(classOf[AlternativeDataStore])
+  Schema.createTables
 
   before {
     alternativeDataStore.clear

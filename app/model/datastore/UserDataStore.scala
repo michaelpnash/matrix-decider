@@ -9,14 +9,12 @@ import Schema._
 import java.util.UUID
 
 @Singleton
-class UserDataStore @Inject()(implicit val session: Session) extends SQLDataStore[UserDTO] {
+class UserDataStore @Inject()() extends SQLDataStore[UserDTO] {
   val table = Users.tableName
 
-  Schema.createTables
+  def insert(dto: UserDTO)(implicit session: Session) = Users.insert(dto)
 
-  def insert(dto: UserDTO) = Users.insert(dto)
+  def findById(id: UUID)(implicit session: Session) = Users.filter(_.id === id.bind).elements.toSet.headOption.asInstanceOf[Option[UserDTO]]
 
-  def findById(id: UUID) = Users.filter(_.id === id.bind).elements.toSet.headOption.asInstanceOf[Option[UserDTO]]
-
-  def findByName(name: String) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
+  def findByName(name: String)(implicit session: Session) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
 }
