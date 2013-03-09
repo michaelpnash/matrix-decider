@@ -3,6 +3,8 @@ package test
 import play.api.test._
 import play.api.test.Helpers._
 import org.scalatest.FreeSpec
+import controllers.routes
+import java.util.UUID
 
 class ApplicationSpec extends FreeSpec {
 
@@ -22,12 +24,12 @@ class ApplicationSpec extends FreeSpec {
           assert(contentAsString(home) contains ("Matrix Decider"))
         }
       }
-      "should say hello" in {
+      "should list decisions" in {
         running(FakeApplication()) {
-          val home = route(FakeRequest(GET, "/hello")).get
+          val home = route(FakeRequest(GET, routes.Decisions.list(UUID.randomUUID).url)).get
           assert(status(home) === OK)
-          assert(contentType(home) === Some("text/plain"))
-          assert(contentAsString(home) contains ("hello"))
+          assert(contentType(home) === Some("text/html"))
+
         }
       }
     }

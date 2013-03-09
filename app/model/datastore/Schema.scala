@@ -18,16 +18,17 @@ object Schema {
      def * = id ~ name <> (UserDTO, UserDTO.unapply _)
    }
 
-  case class DecisionDTO(user: String, id: String)
+  case class DecisionDTO(user: String, name: String, id: String)
 
   //user: String, alternatives: String, criteria: String, id: String
   object Decisions extends Table[DecisionDTO]("DECISIONS") {
     def userId = column[String]("USER_ID")
+    def name = column[String]("NAME")
     def id = column[String]("ID", O.PrimaryKey)
 
     def owner = foreignKey("DECISION_USER", userId, Users)(_.id)
 
-    def * = userId ~ id <> (DecisionDTO, DecisionDTO.unapply _)
+    def * = userId ~ name ~ id <> (DecisionDTO, DecisionDTO.unapply _)
   }
 
   case class CriteriaDTO(name: String, importance: Int, decisionId: String, id: String)

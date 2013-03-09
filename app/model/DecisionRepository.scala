@@ -13,9 +13,9 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
     decisionDataStore.findById(id.toString).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, Set(), UUID.fromString(dto.id)))
   }
   def save(decision: Decision): Decision = {
-    decisionDataStore.insert(DecisionDTO(decision.user.id.toString, decision.id.toString))
+    decisionDataStore.insert(DecisionDTO(decision.user.id.toString, decision.name, decision.id.toString))
     decision
   }
-  def decisionNamesForUser(id: UUID): List[String] = List()
+  def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id.toString).map(dto => DecisionSpecifier(UUID.fromString(dto.id), ""))
   def clear = decisionDataStore.clear
 }

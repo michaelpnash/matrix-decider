@@ -35,7 +35,7 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should insert and retrieve an alternative DTO by id" in {
       val user = UserDTO("foo", "name")
       userDataStore.insert(user)
-      val decisionDto = DecisionDTO(user.id, "bar")
+      val decisionDto = DecisionDTO(user.id, "name", "bar")
       decisionDataStore.insert(decisionDto)
       val alternative = AlternativeDTO("name", decisionDto.id, UUID.randomUUID.toString)
       alternativeDataStore.insert(alternative)
@@ -44,9 +44,9 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should find all alternatives for a specified decision" in {
       val user = UserDTO("foo", "name")
       userDataStore.insert(user)
-      val decisionDto = DecisionDTO(user.id, "bar")
+      val decisionDto = DecisionDTO(user.id, "name", "bar")
       decisionDataStore.insert(decisionDto)
-      val wrongDecision = DecisionDTO(user.id, "wrong")
+      val wrongDecision = DecisionDTO(user.id, "name", "wrong")
       decisionDataStore.insert(wrongDecision)
       val alternative1 = AlternativeDTO("name 1", decisionDto.id, UUID.randomUUID.toString)
       val alternative2 = AlternativeDTO("name 2", decisionDto.id, UUID.randomUUID.toString)
@@ -59,7 +59,7 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should insert and retrieve a criteria DTO" in {
       val user = UserDTO("foo", "name")
       userDataStore.insert(user)
-      val decisionDto = DecisionDTO(user.id, "bar")
+      val decisionDto = DecisionDTO(user.id, "name", "bar")
       decisionDataStore.insert(decisionDto)
       val criteria = CriteriaDTO("name", 1, decisionDto.id, UUID.randomUUID.toString)
       criteriaDataStore.insert(criteria)
@@ -73,9 +73,9 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should retrieve all applicable criteria given a decision id" in {
       val user = UserDTO("foo", "name")
       userDataStore.insert(user)
-      val decisionDto = DecisionDTO(user.id, "bar")
+      val decisionDto = DecisionDTO(user.id, "name", "bar")
       decisionDataStore.insert(decisionDto)
-      val wrongDecision = DecisionDTO(user.id, "baz")
+      val wrongDecision = DecisionDTO(user.id, "name", "baz")
       decisionDataStore.insert(wrongDecision)
       val criteria1 = CriteriaDTO("name 1", 1, decisionDto.id, UUID.randomUUID.toString)
       val criteria2 = CriteriaDTO("name 2", 1, decisionDto.id, UUID.randomUUID.toString)
@@ -98,14 +98,14 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should insert and retrieve a decision DTO" in {
       val user = UserDTO("foo", "name")
       userDataStore.insert(user)
-      val dto = DecisionDTO(user.id, "bar")
+      val dto = DecisionDTO(user.id, "name", "bar")
       decisionDataStore.insert(dto)
       val found = decisionDataStore.findById(dto.id)
       assert(found.get === dto)
     }
     "should throw an exception when asked to insert a decision for a user that does not exist" in {
       intercept[Exception] {
-        decisionDataStore.insert(DecisionDTO("not there", "foo"))
+        decisionDataStore.insert(DecisionDTO("not there", "name", "foo"))
       }
     }
     "should list all stored decision DTOs for a specified user id" in {
@@ -113,9 +113,9 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
       val wrongUser = UserDTO("wrong", "wrong name")
       userDataStore.insert(user)
       userDataStore.insert(wrongUser)
-      val dto1 = DecisionDTO(user.id, "foo")
-      val dto2 = DecisionDTO(user.id, "bar")
-      val wrongDto = DecisionDTO(wrongUser.id, "baz")
+      val dto1 = DecisionDTO(user.id, "name", "foo")
+      val dto2 = DecisionDTO(user.id, "name", "bar")
+      val wrongDto = DecisionDTO(wrongUser.id, "name", "baz")
       decisionDataStore.insert(dto1)
       decisionDataStore.insert(dto2)
       decisionDataStore.insert(wrongDto)

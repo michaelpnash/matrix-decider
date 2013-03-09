@@ -65,7 +65,13 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
     }
     "can produce a list of all decision names associated with a user" in {
       val user = User("name")
-      val names = repo.decisionNamesForUser(user.id)
+      userRepo.save(user)
+      val decision: Decision = Decision(user, Set(), Set())
+      repo.save(decision)
+      val specs = repo.decisionSpecifiersForUser(user.id)
+      assert(specs.head.id === decision.id)
+      assert(specs.size === 1)
+      assert(specs.head.name === decision.name)
     }
     "can persist a modified decision and retrieve it's modified form" in (pending)
   }

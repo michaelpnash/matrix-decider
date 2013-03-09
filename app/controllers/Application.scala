@@ -2,17 +2,18 @@ package controllers
 
 import play.api.mvc._
 import play.api.data.Form
-import play.api.data.Forms.{mapping, nonEmptyText}
+import play.api.data.Forms._
 import com.google.inject.{Inject, Singleton}
+import model.UserRepository
 
 case class LoginView(login: String)
 
 @Singleton
-class Application @Inject()() extends Controller {
+class Application @Inject()(userRepository: UserRepository) extends Controller {
 
   private val loginForm: Form[LoginView] = Form(
     mapping(
-      "username" -> nonEmptyText
+      "username" -> nonEmptyText.verifying("No such user", userRepository.findByName(_).isEmpty)
     )(LoginView.apply)(LoginView.unapply)
   )
 
@@ -29,8 +30,7 @@ class Application @Inject()() extends Controller {
           BadRequest(views.html.index(formWithErrors))
         },
         loginView => {
-          println("ok!")
-          Redirect(routes.Decisions.hello)
+          Redirect(routes.Decisions.list(userRepository.findByName(loginView.login).get.id))
         }
       )
   }

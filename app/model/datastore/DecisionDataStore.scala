@@ -15,5 +15,5 @@ class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
 
   def findById(id: String)(implicit session: Session) = Decisions.filter(_.id === id).to[Seq].headOption
 
-  def findForUser(id: String)(implicit session: Session) = Decisions.filter(_.userId === id).elements.to[Seq]
+  def findForUser(id: String)(implicit session: Session) = Decisions.filter(_.userId === id).elements.to[Seq].asInstanceOf[Seq[DecisionDTO]]
 }

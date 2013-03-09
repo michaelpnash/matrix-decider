@@ -11,5 +11,6 @@ class UserRepository @Inject()(userDataStore: UserDataStore, implicit val sessio
     userDataStore.insert(UserDTO(user.id.toString, user.name.toString))
     user
   }
+  def findByName(name: String): Option[User] = None
   def clear = userDataStore.clear
 }
