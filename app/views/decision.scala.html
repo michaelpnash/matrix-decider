@@ -17,9 +17,6 @@ Alternatives are the items from which you must choose. Each alternative will be 
         </div>
 
         @inputText(decisionForm("alternativeName"))
-        <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
-          @Messages("addalternative")
-        </button>
 
         <div>
         Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
@@ -29,14 +26,13 @@ Alternatives are the items from which you must choose. Each alternative will be 
         @for(criteria <- decision.criteria) {
             <li>
                 @criteria.name
-                Rankings go here
             </li>
         }
         </ul>
         </div>
           @inputText(decisionForm("criteriaName"))
-          <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
-            @Messages("addcriteria")
+          <button type="submit" name="action" class="btn btn-primary" value="login" title="Update this Decision">
+            @Messages("save")
           </button>
     }
 }

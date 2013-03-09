@@ -38,5 +38,10 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
   def withNewAlternative(decision: Decision, alternative: Alternative): Decision = {
     alternativeDataStore.insert(AlternativeDTO(alternative.name, decision.id, alternative.id))
     decision.copy(alternatives = decision.alternatives + alternative)
-}
+  }
+
+  def withNewCriteria(decision: Decision, criteria: Criteria): Decision = {
+    criteriaDataStore.insert(CriteriaDTO(criteria.name, criteria.importance, decision.id, criteria.id))
+    decision.copy(criteria = decision.criteria + criteria)
+  }
 }

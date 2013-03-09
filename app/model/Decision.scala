@@ -8,7 +8,7 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
 
   def withNewAlternative(alternative: Alternative)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withNewAlternative(this, alternative)
 
-  def withNewCriteria(criteria: Criteria): Decision = this
+  def withNewCriteria(criteria: Criteria)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withNewCriteria(this, criteria)
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)
