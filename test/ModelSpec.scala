@@ -20,14 +20,6 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
     userRepo.clear
   }
   "a decision" - {
-    "requires the same number of criteria for each alternative" in {
-      val crit1 = Criteria("one", 1)
-      val crit2 = Criteria("two", 2)
-      intercept[Exception] {
-        Decision(User("name"),
-          Set(Alternative("one", Set(Ranking(crit1, 1)))), Set(crit1, crit2), name = "my decision")
-      }
-    }
     "can produce a list of alternatives ordered by weighted ranking" in {
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)
@@ -49,7 +41,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
           Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my name")
       val honda = Alternative("honda", Set())
-      val modified = decision.withNewAlternative(honda)(alternativeDataStore, rankingDataStore, database)
+      val modified = decision.withNewAlternative(honda)(alternativeDataStore, database)
       assert(modified.alternatives.map(_.id).contains(honda.id))
       assert(alternativeDataStore.findById(honda.id)(database.createSession).isDefined)
     }
