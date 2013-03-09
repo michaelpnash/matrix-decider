@@ -11,6 +11,7 @@ import java.util.UUID
 
 case class DecisionView(name: String)
 case class AlternativeView(name: String)
+case class CriteriaView(name: String)
 
 @Singleton
 class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
@@ -23,8 +24,14 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
 
   private val alternativeForm: Form[AlternativeView] = Form(
     mapping(
-      "name" -> nonEmptyText
+      "alternativename" -> nonEmptyText
     )(AlternativeView.apply)(AlternativeView.unapply)
+  )
+
+  private val criteriaForm: Form[CriteriaView] = Form(
+    mapping(
+      "criterianame" -> nonEmptyText
+    )(CriteriaView.apply)(CriteriaView.unapply)
   )
 
   def list(userId: UUID) = Action { implicit request =>
@@ -49,17 +56,33 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
     val decision = decisionRepository.findById(decisionId).get
     alternativeForm.bindFromRequest.fold(
         formWithErrors => {
-          BadRequest(views.html.decision(decision, formWithErrors))
+          BadRequest(views.html.decision(decision, formWithErrors, criteriaForm))
         },
         alternativeView => {
-          //save the new decision
+          //update decision
           val existing = decisionRepository.findById(decisionId).get
           decisionRepository.save(existing)
-          Ok(views.html.decision(decision, alternativeForm))
+          Ok(views.html.decision(decision, alternativeForm, criteriaForm))
         }
       )
   }
+
+   def newCriteria(decisionId: UUID) = Action { implicit request =>
+    val decision = decisionRepository.findById(decisionId).get
+    criteriaForm.bindFromRequest.fold(
+        formWithErrors => {
+          BadRequest(views.html.decision(decision, alternativeForm, formWithErrors))
+        },
+        alternativeView => {
+          //update decision
+          val existing = decisionRepository.findById(decisionId).get
+          decisionRepository.save(existing)
+          Ok(views.html.decision(decision, alternativeForm, criteriaForm))
+        }
+      )
+  }
+
   def edit(decisionId: UUID) = Action { implicit request =>
-    Ok(views.html.decision(decisionRepository.findById(decisionId).get, alternativeForm))
+    Ok(views.html.decision(decisionRepository.findById(decisionId).get, alternativeForm, criteriaForm))
   }
 }
