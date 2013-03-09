@@ -1,44 +1,42 @@
-@(decision: model.Decision, alternativeForm: play.api.data.Form[controllers.AlternativeView], criteriaForm: play.api.data.Form[controllers.CriteriaView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(decision: model.Decision, decisionForm: play.api.data.Form[controllers.DecisionView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
 
 @main {
     <p>@decision.name</p>
-    <div>
+     @form(routes.Decisions.update(decision.id)) {
+        <div>
 Alternatives are the items from which you must choose. Each alternative will be compared to all others for this decision.
-        <ul>
-            @for(alternative <- decision.alternatives) {
-            <li>
-                  @alternative.name
-            </li>
-        }
-        </ul>
-    </div>
+            <ul>
+                @for(alternative <- decision.alternatives) {
+                <li>
+                      @alternative.name
+                </li>
+            }
+            </ul>
+        </div>
 
-     @form(routes.Decisions.newDecision(decision.user.id)) {
-        @inputText(alternativeForm("alternativename"))
+        @inputText(decisionForm("alternativeName"))
         <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
           @Messages("addalternative")
         </button>
-     }
 
-    <div>
-    Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
-    will specify a relative score for each criteria. For each criteria, you can specify a relative importance here.
+        <div>
+        Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
+        will specify a relative score for each criteria. For each criteria, you can specify a relative importance here.
 
-    <ul>
-    @for(criteria <- decision.criteria) {
-        <li>
-            @criteria.name
-            Rankings go here
-        </li>
-    }
-    </ul>
-    </div>
-    @form(routes.Decisions.newDecision(decision.user.id)) {
-      @inputText(criteriaForm("criterianame"))
-      <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
-        @Messages("addcriteria")
-      </button>
+        <ul>
+        @for(criteria <- decision.criteria) {
+            <li>
+                @criteria.name
+                Rankings go here
+            </li>
+        }
+        </ul>
+        </div>
+          @inputText(decisionForm("criteriaName"))
+          <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
+            @Messages("addcriteria")
+          </button>
     }
 }
