@@ -17,4 +17,11 @@ class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
   def findById(id: UUID)(implicit session: Session) = Decisions.filter(_.id === id.bind).to[Seq].headOption
 
   def findForUser(id: UUID)(implicit session: Session) = Decisions.filter(_.userId === id.bind).elements.to[Seq].asInstanceOf[Seq[DecisionDTO]]
+
+  def update(dto: DecisionDTO)(implicit session: Session) = {
+    require(findById(dto.id).isDefined, "No such decision")
+    Decisions.filter(_.id === dto.id.bind).foreach { case entity: DecisionDTO =>
+      (for(u <- Decisions if u.id === dto.id.bind) yield u) update (dto)
+    }
+  }
 }
