@@ -38,6 +38,7 @@ object Schema {
     def importance = column[Int]("IMPORTANCE")
     def decisionId = column[UUID]("DECISION_ID")
     def id = column[UUID]("ID", O.PrimaryKey)
+    def idx = index("idx_crit_name", (name, decisionId), unique = true)
     def decision = foreignKey("CRIT_DECISION", decisionId, Decisions)(_.id)
     def * = name ~ importance ~ decisionId ~ id <> (CriteriaDTO, CriteriaDTO.unapply _)
   }
@@ -48,6 +49,7 @@ object Schema {
     def name = column[String]("NAME")
     def decisionId = column[UUID]("DECISION_ID")
     def id = column[UUID]("ID", O.PrimaryKey)
+    def idx = index("idx_alt_name", (name, decisionId), unique = true)
     def * = name ~ decisionId ~ id <> (AlternativeDTO, AlternativeDTO.unapply _)
   }
 

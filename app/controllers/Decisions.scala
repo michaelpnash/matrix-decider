@@ -12,7 +12,7 @@ import model.Alternative
 import model.Decision
 
 case class NewDecisionView(name: String)
-case class DecisionView(alternativeName: Option[String], criteriaName: Option[String], criteriaImportance: Int)
+case class DecisionView(alternativeName: Option[String], criteriaName: Option[String], criteriaImportance: Option[Int])
 
 @Singleton
 class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
@@ -29,7 +29,7 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
     mapping(
       "alternativeName" -> optional(text),
       "criteriaName" -> optional(text),
-      "criteriaImportance" -> number
+      "criteriaImportance" -> optional(number)
     )(DecisionView.apply)(DecisionView.unapply)
   )
 
@@ -63,7 +63,7 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
           log.info("Update valid:" + decisionView)
           var newDecision = decisionRepository.findById(decisionId).get
           if (decisionView.alternativeName.isDefined) newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get, Set()))
-          if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get, decisionView.criteriaImportance))
+          if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get, decisionView.criteriaImportance.getOrElse(0)))
           log.info("Updated decision:" + newDecision)
           Ok(views.html.decision(newDecision, decisionForm))
         }

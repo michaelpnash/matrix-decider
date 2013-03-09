@@ -77,3 +77,14 @@ body {
 .phone_template, .profile_template {
     display: none;
 }
+.rankingtable th {
+    word-wrap: break-word;
+    max-width: 100px;
+}
+.rankingtable td {
+    word-wrap: break-word;
+    max-width: 100px;
+}
+.rankingtable select {
+    max-width: 100px;
+}
