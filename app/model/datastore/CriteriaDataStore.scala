@@ -15,5 +15,5 @@ class CriteriaDataStore @Inject()() extends SQLDataStore[CriteriaDTO] {
 
   def findById(id: String)(implicit session: Session) = Criteria.filter(_.id === id).firstOption
 
-  def findByDecisionId(id: String)(implicit session: Session) = Criteria.filter(_.decisionId === id).to[Seq]
+  def findByDecisionId(id: String)(implicit session: Session) = Criteria.filter(_.decisionId === id).to[Seq].asInstanceOf[Seq[CriteriaDTO]]
 }
