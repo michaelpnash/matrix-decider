@@ -3,10 +3,11 @@
 # ~~~~
 
 # Home page
-GET      /                   @controllers.Application.index
-POST     /                   @controllers.Application.login
-GET      /decisions          @controllers.Decisions.list(userId: java.util.UUID)
-POST     /decisions          @controllers.Decisions.newDecision(userId: java.util.UUID)
+GET      /                          @controllers.Application.index
+POST     /                          @controllers.Application.login
+GET      /decisions                 @controllers.Decisions.list(userId: java.util.UUID)
+POST     /decisions                 @controllers.Decisions.newDecision(userId: java.util.UUID)
+GET      /decisions/:decisionId     @controllers.Decisions.edit(decisionId: java.util.UUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

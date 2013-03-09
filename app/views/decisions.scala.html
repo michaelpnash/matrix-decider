@@ -4,12 +4,11 @@
 
 @main {
     <p>Your Decisions</p>
-    <dl>
+    <ul>
         @for(decision <- decisions) {
-            <dt>@decision.id</dt>
-            <dt>@decision.name</dt>
+            <dt><a href="@routes.Decisions.edit(decision.id)">@decision.name</a></dt>
         }
-    </dl>
+    </ul>
 
         @form(routes.Decisions.newDecision(userId)) {
     <fieldset>
