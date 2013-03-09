@@ -39,6 +39,6 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
   }
 
   def edit(decisionId: UUID) = Action { implicit request =>
-    Ok("ok")
+    Ok(views.html.decision(decisionRepository.findById(decisionId).get))
   }
 }

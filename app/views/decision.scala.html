@@ -1,0 +1,15 @@
+@(decision: model.Decision)(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+
+@import helper._
+
+@main {
+    <p>@decision.name</p>
+    <ul>
+        Alternatives
+    </ul>
+    New alternative
+    <ul>
+        criteria (w rankings)
+    </ul>
+    New criteria
+}
