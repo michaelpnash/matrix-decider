@@ -1,7 +1,7 @@
 import model._
 import model.Alternative
 import model.Criteria
-import model.datastore.Schema
+import model.datastore.{RankingDataStore, AlternativeDataStore, Schema}
 import model.Decision
 import model.User
 import org.scalatest.{BeforeAndAfter, FreeSpec}
@@ -10,7 +10,10 @@ import scala.slick.session.Database
 class ModelSpec extends FreeSpec with BeforeAndAfter {
   val repo = Global.injector.getInstance(classOf[DecisionRepository])
   val userRepo = Global.injector.getInstance(classOf[UserRepository])
-  Schema.createTables(Global.injector.getInstance(classOf[Database]).createSession)
+  val alternativeDataStore = Global.injector.getInstance(classOf[AlternativeDataStore])
+  val rankingDataStore = Global.injector.getInstance(classOf[RankingDataStore])
+  val database = Global.injector.getInstance(classOf[Database])
+  Schema.createTables(database.createSession)
 
   before {
     repo.clear
@@ -37,7 +40,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(result === alternatives)
     }
     "can produce a list of criteria ordered by importance" in (pending)
-    "can produce a copy of itself with an additional alternative" in {
+    "can produce a copy of itself with an additional alternative, saving the new alternative in the data stores" in {
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)
       val alternatives = Set(Alternative("ford",
@@ -46,8 +49,9 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
           Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my name")
       val honda = Alternative("honda", Set())
-      val modified = decision.withNewAlternative(honda)
+      val modified = decision.withNewAlternative(honda)(alternativeDataStore, rankingDataStore, database)
       assert(modified.alternatives.map(_.id).contains(honda.id))
+      assert(alternativeDataStore.findById(honda.id)(database.createSession).isDefined)
     }
     "can produce a copy of itself with an additional criteria" in (pending)
   }
