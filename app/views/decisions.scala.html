@@ -1,8 +1,24 @@
-@(decisions: Seq[model.DecisionSpecifier])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(decisions: Seq[model.DecisionSpecifier], decisionForm: play.api.data.Form[controllers.DecisionView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
 
 @main {
-    <p>decisions listed here</p>
+    <p>Your Decisions</p>
+    <dl>
+        @for(decision <- decisions) {
+            <dt>@decision.id</dt>
+            <dt>@decision.name</dt>
+        }
+    </dl>
 
+        @form(routes.Decisions.newDecision) {
+    <fieldset>
+        <legend>Create A New Decision</legend>
+        @inputText(decisionForm("name"))
+    </fieldset>
+    <div class="form-actions">
+      <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
+        @Messages("newdecision")
+      </button>
+</div> }
 }
