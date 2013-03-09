@@ -33,7 +33,7 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should find a user by name" in {
       val dto = UserDTO("id", "name")
       userDataStore.insert(dto)
-      assert(userDataStore.findById(dto.name) === dto)
+      assert(userDataStore.findByName(dto.name).get === dto)
     }
   }
   "The alternative data store" - {
