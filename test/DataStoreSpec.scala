@@ -97,7 +97,9 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     "should not insert an alternative for an invalid decision" in (pending)
   }
   "The rankings data store" - {
-    "should do stuff" in (pending)
+    "should insert a ranking and retrieve it by alternative id and criteria id" in (pending)
+    "should not insert a ranking for an invalid alternative id" in (pending)
+    "should not insert a ranking for an invalid criteria id" in (pending)
   }
   "The decision data store" - {
     "should insert and retrieve a decision DTO" in {
