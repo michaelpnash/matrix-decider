@@ -1,15 +1,52 @@
-@(decision: model.Decision)(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(decision: model.Decision, alternativeForm: play.api.data.Form[controllers.AlternativeView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
 
 @main {
     <p>@decision.name</p>
+    <div>
+Alternatives are the items from which you must choose. Each alternative will be compared to all others for this decision.
+        <ul>
+            @for(alternative <- decision.alternatives) {
+            <li>
+                  @alternative.name
+            </li>
+        }
+        </ul>
+    </div>
+
+     @form(routes.Decisions.newDecision(decision.user.id)) {
+    <fieldset>
+        <legend>Create A New Alternative</legend>
+        @inputText(alternativeForm("name"))
+    </fieldset>
+    <div class="form-actions">
+      <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
+        @Messages("newdecision")
+      </button>
+</div> }
+
+    <div>
+    Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
+    will specify a relative score for each criteria. For each criteria, you can specify a relative importance here.
+
     <ul>
-        Alternatives
+    @for(criteria <- decision.criteria) {
+        <li>
+            @criteria.name
+            Rankings go here
+        </li>
+    }
     </ul>
-    New alternative
-    <ul>
-        criteria (w rankings)
-    </ul>
-    New criteria
+    </div>
+    @form(routes.Decisions.newDecision(decision.user.id)) {
+    <fieldset>
+        <legend>Create A New Crteria</legend>
+        @inputText(alternativeForm("name"))
+    </fieldset>
+    <div class="form-actions">
+      <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
+        @Messages("newdecision")
+      </button>
+</div> }
 }

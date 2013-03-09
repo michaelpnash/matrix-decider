@@ -10,6 +10,7 @@ import model.{UserRepository, Decision, DecisionRepository}
 import java.util.UUID
 
 case class DecisionView(name: String)
+case class AlternativeView(name: String)
 
 @Singleton
 class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
@@ -18,6 +19,12 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
     mapping(
       "name" -> nonEmptyText
     )(DecisionView.apply)(DecisionView.unapply)
+  )
+
+  private val alternativeForm: Form[AlternativeView] = Form(
+    mapping(
+      "name" -> nonEmptyText
+    )(AlternativeView.apply)(AlternativeView.unapply)
   )
 
   def list(userId: UUID) = Action { implicit request =>
@@ -38,7 +45,21 @@ class Decisions @Inject()(decisionRepository: DecisionRepository, userRepository
       )
   }
 
+  def newAlternative(decisionId: UUID) = Action { implicit request =>
+    val decision = decisionRepository.findById(decisionId).get
+    alternativeForm.bindFromRequest.fold(
+        formWithErrors => {
+          BadRequest(views.html.decision(decision, formWithErrors))
+        },
+        alternativeView => {
+          //save the new decision
+          val existing = decisionRepository.findById(decisionId).get
+          decisionRepository.save(existing)
+          Ok(views.html.decision(decision, alternativeForm))
+        }
+      )
+  }
   def edit(decisionId: UUID) = Action { implicit request =>
-    Ok(views.html.decision(decisionRepository.findById(decisionId).get))
+    Ok(views.html.decision(decisionRepository.findById(decisionId).get, alternativeForm))
   }
 }
