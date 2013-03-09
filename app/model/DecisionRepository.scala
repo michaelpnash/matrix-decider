@@ -22,12 +22,12 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
 
       Alternative(dto.name, rankings.map(rankingDomain(_, criteria)).toSet, dto.id)
     })
-    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id))
+    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
   }
   def save(decision: Decision): Decision = {
     decisionDataStore.insert(DecisionDTO(decision.user.id, decision.name, decision.id))
     decision
   }
-  def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id).map(dto => DecisionSpecifier(dto.id, ""))
+  def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id).map(dto => DecisionSpecifier(dto.id, dto.name))
   def clear = decisionDataStore.clear
 }
