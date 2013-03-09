@@ -13,7 +13,7 @@ import java.util.UUID
 class Decisions @Inject()(decisionRepository: DecisionRepository) extends Controller {
 
   def list(userId: UUID) = Action { implicit request =>
-    Ok(views.html.decisions(Seq()))
+    Ok(views.html.decisions(decisionRepository.decisionSpecifiersForUser(userId)))
   }
 
 }

@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
 import com.google.inject.{Inject, Singleton}
-import model.UserRepository
+import model.{User, UserRepository}
 
 case class LoginView(login: String)
 
@@ -13,7 +13,7 @@ class Application @Inject()(userRepository: UserRepository) extends Controller {
 
   private val loginForm: Form[LoginView] = Form(
     mapping(
-      "username" -> nonEmptyText.verifying("No such user", userRepository.findByName(_).isEmpty)
+      "username" -> nonEmptyText //.verifying("No such user", userRepository.findByName(_).isDefined)
     )(LoginView.apply)(LoginView.unapply)
   )
 
@@ -26,11 +26,14 @@ class Application @Inject()(userRepository: UserRepository) extends Controller {
     implicit request =>
       loginForm.bindFromRequest.fold(
         formWithErrors => {
-          println("Bad!")
           BadRequest(views.html.index(formWithErrors))
         },
         loginView => {
-          Redirect(routes.Decisions.list(userRepository.findByName(loginView.login).get.id))
+          val user = userRepository.findByName(loginView.login) match {
+            case Some(user) => user
+            case None => userRepository.save(User(loginView.login))
+          }
+          Redirect(routes.Decisions.list(user.id))
         }
       )
   }
