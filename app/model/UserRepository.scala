@@ -9,10 +9,10 @@ import java.util.UUID
 @Singleton
 class UserRepository @Inject()(userDataStore: UserDataStore, implicit val session: Session) {
   def save(user: User): User = {
-    userDataStore.insert(UserDTO(user.id.toString, user.name.toString))
+    userDataStore.insert(UserDTO(user.id, user.name.toString))
     user
   }
-  def findByName(name: String): Option[User] = userDataStore.findByName(name).map(dto => User(dto.name, UUID.fromString(dto.id)))
+  def findByName(name: String): Option[User] = userDataStore.findByName(name).map(dto => User(dto.name, dto.id))
 
   def clear = userDataStore.clear
 }

@@ -6,6 +6,7 @@ import scala.slick.driver.HsqldbDriver.simple._
 import slick.session.Session
 import com.google.inject.{Inject, Singleton}
 import Schema._
+import java.util.UUID
 
 @Singleton
 class UserDataStore @Inject()(implicit val session: Session) extends SQLDataStore[UserDTO] {
@@ -15,7 +16,7 @@ class UserDataStore @Inject()(implicit val session: Session) extends SQLDataStor
 
   def insert(dto: UserDTO) = Users.insert(dto)
 
-  def findById(id: String) = Users.filter(_.id === id).elements.toSet.headOption
+  def findById(id: UUID) = Users.filter(_.id === id.bind).elements.toSet.headOption
 
   def findByName(name: String) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
 }

@@ -6,6 +6,7 @@ import scala.slick.driver.HsqldbDriver.simple._
 import slick.session.Session
 import com.google.inject.{Inject, Singleton}
 import Schema._
+import java.util.UUID
 
 @Singleton
 class CriteriaDataStore @Inject()() extends SQLDataStore[CriteriaDTO] {
@@ -13,7 +14,7 @@ class CriteriaDataStore @Inject()() extends SQLDataStore[CriteriaDTO] {
 
   def insert(dto: CriteriaDTO)(implicit session: Session) = Criteria.insert(dto)
 
-  def findById(id: String)(implicit session: Session) = Criteria.filter(_.id === id).firstOption
+  def findById(id: UUID)(implicit session: Session) = Criteria.filter(_.id === id.bind).firstOption
 
-  def findByDecisionId(id: String)(implicit session: Session) = Criteria.filter(_.decisionId === id).to[Seq].asInstanceOf[Seq[CriteriaDTO]]
+  def findByDecisionId(id: UUID)(implicit session: Session) = Criteria.filter(_.decisionId === id.bind).to[Seq].asInstanceOf[Seq[CriteriaDTO]]
 }

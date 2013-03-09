@@ -6,6 +6,7 @@ import scala.slick.driver.HsqldbDriver.simple._
 import slick.session.Session
 import com.google.inject.{Inject, Singleton}
 import Schema._
+import java.util.UUID
 
 @Singleton
 class RankingDataStore @Inject()() extends SQLDataStore[RankingDTO] {
@@ -13,8 +14,8 @@ class RankingDataStore @Inject()() extends SQLDataStore[RankingDTO] {
 
   def insert(dto: RankingDTO)(implicit session: Session) = Rankings.insert(dto)
 
-  def findByAlternativeId(id: String)(implicit session: Session) = Rankings.filter(_.alternativeId === id).to[Seq]
+  def findByAlternativeId(id: UUID)(implicit session: Session) = Rankings.filter(_.alternativeId === id.bind).to[Seq]
 
-  def findByAlternativeIdAndCriteriaId(alternativeId: String, criteriaId: String)(implicit session: Session) =
-    Rankings.filter(r => r.alternativeId === alternativeId && r.criteriaId === criteriaId).firstOption.asInstanceOf[Option[RankingDTO]]
+  def findByAlternativeIdAndCriteriaId(alternativeId: UUID, criteriaId: UUID)(implicit session: Session) =
+    Rankings.filter(r => r.alternativeId === alternativeId.bind && r.criteriaId === criteriaId.bind).firstOption.asInstanceOf[Option[RankingDTO]]
 }

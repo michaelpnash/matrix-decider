@@ -11,23 +11,23 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
                                    criteriaDataStore: CriteriaDataStore,
                                    rankingDataStore: RankingDataStore, implicit val session: Session) {
 
-  def criteriaDomain(dto: CriteriaDTO) = Criteria(dto.name, dto.importance, UUID.fromString(dto.id))
+  def criteriaDomain(dto: CriteriaDTO) = Criteria(dto.name, dto.importance, dto.id)
   implicit def criteriaSet(dtoSet: Set[CriteriaDTO]) = dtoSet.map(criteriaDomain(_))
-  def rankingDomain(dto: RankingDTO, criteria: Map[String, CriteriaDTO]) = Ranking(criteriaDomain(criteria(dto.criteriaId)), dto.rank)
+  def rankingDomain(dto: RankingDTO, criteria: Map[UUID, CriteriaDTO]) = Ranking(criteriaDomain(criteria(dto.criteriaId)), dto.rank)
 
   def findById(id: UUID): Option[Decision] = {
-    val criteria:Map[String, CriteriaDTO] = criteriaDataStore.findByDecisionId(id.toString).map(dto => (dto.id, dto)).toMap
-    val alternatives = alternativeDataStore.findByDecisionId(id.toString).map(_.asInstanceOf[AlternativeDTO]).map(dto => {
-      val rankings = criteriaDataStore.findByDecisionId(id.toString).map(criteriaDto => rankingDataStore.findByAlternativeIdAndCriteriaId(dto.id, criteriaDto.id)).flatten
+    val criteria:Map[UUID, CriteriaDTO] = criteriaDataStore.findByDecisionId(id).map(dto => (dto.id, dto)).toMap
+    val alternatives = alternativeDataStore.findByDecisionId(id).map(_.asInstanceOf[AlternativeDTO]).map(dto => {
+      val rankings = criteriaDataStore.findByDecisionId(id).map(criteriaDto => rankingDataStore.findByAlternativeIdAndCriteriaId(dto.id, criteriaDto.id)).flatten
 
-      Alternative(dto.name, rankings.map(rankingDomain(_, criteria)).toSet, UUID.fromString(dto.id))
+      Alternative(dto.name, rankings.map(rankingDomain(_, criteria)).toSet, dto.id)
     })
-    decisionDataStore.findById(id.toString).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, UUID.fromString(dto.id)))
+    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id))
   }
   def save(decision: Decision): Decision = {
-    decisionDataStore.insert(DecisionDTO(decision.user.id.toString, decision.name, decision.id.toString))
+    decisionDataStore.insert(DecisionDTO(decision.user.id, decision.name, decision.id))
     decision
   }
-  def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id.toString).map(dto => DecisionSpecifier(UUID.fromString(dto.id), ""))
+  def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id).map(dto => DecisionSpecifier(dto.id, ""))
   def clear = decisionDataStore.clear
 }
