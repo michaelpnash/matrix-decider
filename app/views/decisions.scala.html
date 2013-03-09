@@ -1,4 +1,4 @@
-@(decisions: Seq[model.DecisionSpecifier], decisionForm: play.api.data.Form[controllers.DecisionView])(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(decisions: Seq[model.DecisionSpecifier], decisionForm: play.api.data.Form[controllers.DecisionView], userId: java.util.UUID)(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
 
@@ -11,7 +11,7 @@
         }
     </dl>
 
-        @form(routes.Decisions.newDecision) {
+        @form(routes.Decisions.newDecision(userId)) {
     <fieldset>
         <legend>Create A New Decision</legend>
         @inputText(decisionForm("name"))

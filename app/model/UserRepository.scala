@@ -15,4 +15,6 @@ class UserRepository @Inject()(userDataStore: UserDataStore, implicit val sessio
   def findByName(name: String): Option[User] = userDataStore.findByName(name).map(dto => User(dto.name, dto.id))
 
   def clear = userDataStore.clear
+
+  def findById(id: UUID): Option[User] = userDataStore.findById(id).map(dto => User(dto.name, dto.id))
 }
