@@ -39,6 +39,9 @@ display: inline;
 .radio-group * .input label {
     font-weight: normal;
 }
+table .inputfield * .help-block {
+    visibility: hidden;
+}
 .radio-group * .help-block
 {
    visibility: hidden;
@@ -47,6 +50,9 @@ display: inline;
     display: inline;
 }
 
+table * td {
+    vertical-align: top;
+}
 table * label {
     display: block;
     float: left;
