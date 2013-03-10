@@ -31,14 +31,28 @@ Alternatives are the items from which you must choose. Each alternative will be 
                         </td>
                       }
                 </tr>
-            }
+                }
+                <tr>
+                    <td>
+                        <div class="inputfield">
+                            @inputText(decisionForm("alternativeName"))
+                        </div>
+                    </td>
+                    @for(criteria <- decision.criteriaByImportance) {
+                        <td>
+                            <select name="selectionField">
+                              <option value="0" >Worst</option>
+                              <option value="1" >Very Poor</option>
+                              <option value="2" >Poor</option>
+                              <option value="3" >Medium</option>
+                              <option value="4" >Good</option>
+                              <option value="5" >Best</option>
+                            </select>
+                        </td>
+                      }
+                </tr>
             </table>
             <br/>
-
-            <div class="inputfield">
-                @inputText(decisionForm("alternativeName"))
-            </div>
-
         </div>
 
         <div class="section">
