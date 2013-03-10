@@ -15,7 +15,9 @@ case class NewDecisionView(name: String)
 case class DecisionView(alternativeName: Option[String], criteriaName: Option[String], criteriaImportance: Option[Int])
 
 object Decisions {
-  val importances = Map("0"->"Unimportant", "1"->"Trivial", "2"->"Somewhat Important", "3"->"Important", "4"->"Very Important","5"->"Extremely Important").toSeq.sortBy(_._1)
+  val importances = Map("0"->"Irrelevant", "1"->"Trivial", "2"->"Somewhat Important", "3"->"Important", "4"->"Very Important","5"->"Extremely Important").toSeq.sortBy(_._1)
+  val rankings =  Map("0" -> "Worst", "1" -> "Very Poor", "2" -> "Poor",
+                              "3" -> "Medium", "4" -> "Good", "5" -> "Best").toSeq.sortBy(_._1)
 }
 @Singleton
 class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
