@@ -41,12 +41,22 @@ display: inline;
 }
 .radio-group * .help-block
 {
-   visibility:hidden;
+   visibility: hidden;
 }
 .inputfield * {
     display: inline;
 }
 
+table * label {
+    display: block;
+    float: left;
+    visibility: hidden;
+    width: 0px;
+}
+
+table * .radio-group * .input label {
+    display: inline;
+}
 label {
     font-weight: bold;
 }
