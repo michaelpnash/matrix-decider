@@ -68,7 +68,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
                         <td>@criteria.name</td>
                         <td>
                             <div class="inputfield">
-                                @select(field=decisionForm("criteriaImportance").copy(name = "importance_" + criteria.id.toString),options=controllers.Decisions.importances, '_label -> "")
+                                @select(field=decisionForm("criteriaImportance").copy(value = Some(criteria.importance.toString), name = "importance_" + criteria.id.toString),options=controllers.Decisions.importances, '_label -> "")
                         </div>
                         </td>
                     </tr>
@@ -81,7 +81,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
                     </td>
                     <td>
                         <div class="inputfield">
-                            @select(field=decisionForm("criteriaImportance"),options=controllers.Decisions.importances))
+                            @select(field=decisionForm("criteriaImportance"),options=controllers.Decisions.importances)
                         </div>
                     </td>
                 </tr>
