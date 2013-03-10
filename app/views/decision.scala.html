@@ -49,23 +49,33 @@ Alternatives are the items from which you must choose. Each alternative will be 
                 <tr><th>Criteria</th>
                     <th>Importance</th>
                 </tr>
-            @for(criteria <- decision.criteria) {
+                @for(criteria <- decision.criteria) {
+                    <tr>
+                        <td>@criteria.name</td>
+                        <td>@criteria.importance</td>
+                    </tr>
+                }
                 <tr>
-                    <td>@criteria.name</td>
-                    <td>@criteria.importance</td>
+                    <td>
+                        <div class="inputfield">
+                            @inputText(decisionForm("criteriaName"))
+                        </div>
+                    </td>
+                    <td>
+                        <div class="inputfield">
+                          <div class="radio-group">
+
+                          @inputRadioGroup(
+                              decisionForm("criteriaImportance"),
+                              options = options("0"->"Unimportant","1"->"Trivial","2"->"Somewhat Important","3"->"Important","4"->"Very Important","5"->"Extremely Important")
+                            )
+                          </div>
+                        </div>
+                    </td>
                 </tr>
-            }
             </table>
 
-            <div class="inputfield">
-              @inputText(decisionForm("criteriaName"))
-              <div class="radio-group">
-              @inputRadioGroup(
-                  decisionForm("criteriaImportance"),
-                  options = options("0"->"Unimportant","1"->"Trivial","2"->"Somewhat Important","3"->"Important","4"->"Very Important","5"->"Extremely Important")
-                )
-              </div>
-            </div>
+
         </div>
 
           <button type="submit" name="action" class="btn btn-primary" value="login" title="Update this Decision">
