@@ -1,4 +1,6 @@
-
+body {
+    font-family: Arial, sans-serif;
+}
 .ranking-table
 {
   padding: 0;
@@ -27,7 +29,34 @@
   text-align: left;
   color: #632a39;
 }
+.radio-group *
+{
+display: inline;
+}
+.radio-group * .input label:after {
+    content: '';
+}
+.radio-group * .input label {
+    font-weight: normal;
+}
 .radio-group * .help-block
 {
    visibility:hidden;
+}
+.inputfield * {
+    display: inline;
+}
+
+label {
+    font-weight: bold;
+}
+label:after {
+    content: ':';
+}
+div .section {
+    min-height: 1px;
+    clear:both; width:100%;
+    border-bottom:1px solid #d1d1d1;
+    margin-top:30px;
+    margin-bottom:30px;
 }

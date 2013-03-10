@@ -6,7 +6,7 @@
 @main {
     <p>@decision.name</p>
      @form(routes.Decisions.update(decision.id)) {
-        <div>
+        <div class="section">
 Alternatives are the items from which you must choose. Each alternative will be compared to all others for this decision.
             <table class="ranking-table">
                 <tr>
@@ -33,31 +33,43 @@ Alternatives are the items from which you must choose. Each alternative will be 
                 </tr>
             }
             </table>
+            <br/>
+
+            <div class="inputfield">
+                @inputText(decisionForm("alternativeName"))
+            </div>
+
         </div>
 
-        @inputText(decisionForm("alternativeName"))
+        <div class="section">
+            <p>Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
+            will specify a relative score for each criteria. For each criteria, you can specify a relative importance here.</p>
 
-        <div>
-        Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
-        will specify a relative score for each criteria. For each criteria, you can specify a relative importance here.
+            <table class="ranking-table">
+                <tr><th>Criteria</th>
+                    <th>Importance</th>
+                </tr>
+            @for(criteria <- decision.criteria) {
+                <tr>
+                    <td>@criteria.name</td>
+                    <td>@criteria.importance</td>
+                </tr>
+            }
+            </table>
 
-        <ul>
-        @for(criteria <- decision.criteria) {
-            <li>
-                @criteria.name @criteria.importance
-            </li>
-        }
-        </ul>
+            <div class="inputfield">
+              @inputText(decisionForm("criteriaName"))
+              <div class="radio-group">
+              @inputRadioGroup(
+                  decisionForm("criteriaImportance"),
+                  options = options("0"->"Unimportant","1"->"Trivial","2"->"Somewhat Important","3"->"Important","4"->"Very Important","5"->"Extremely Important")
+                )
+              </div>
+            </div>
         </div>
-          @inputText(decisionForm("criteriaName"))
-          <div class="radio-group">
-          @inputRadioGroup(
-              decisionForm("criteriaImportance"),
-              options = options("0"->"Unimportant","1"->"Trivial","2"->"Somewhat Important","3"->"Important","4"->"Very Important","5"->"Extremely Important")
-            )
-          </div>
+
           <button type="submit" name="action" class="btn btn-primary" value="login" title="Update this Decision">
-            @Messages("save")
+            @Messages("saveAnalyze")
           </button>
     }
 }
