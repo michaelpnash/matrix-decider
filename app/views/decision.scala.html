@@ -66,7 +66,11 @@ Alternatives are the items from which you must choose. Each alternative will be 
                 @for(criteria <- decision.criteria) {
                     <tr>
                         <td>@criteria.name</td>
-                        <td>@criteria.importance</td>
+                        <td>
+                            <div class="inputfield">
+                                @select(field=decisionForm("criteriaImportance"),options=controllers.Decisions.importances)
+                        </div>
+                        </td>
                     </tr>
                 }
                 <tr>

@@ -14,6 +14,9 @@ import model.Decision
 case class NewDecisionView(name: String)
 case class DecisionView(alternativeName: Option[String], criteriaName: Option[String], criteriaImportance: Option[Int])
 
+object Decisions {
+  val importances = Map("0"->"Unimportant", "1"->"Trivial", "2"->"Somewhat Important", "3"->"Important", "4"->"Very Important","5"->"Extremely Important").toSeq.sortBy(_._1)
+}
 @Singleton
 class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, userRepository: UserRepository) extends Controller {
 
@@ -46,7 +49,7 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
         decisionView => {
           //save the new decision
           val user = userRepository.findById(userId).get
-          decisionRepository.save(Decision(user, Set(), Set(), name = decisionView.name))
+          decisionRepository.save(Decision(user, Set(), Set(), name = decisionView.name.capitalize))
           Ok(views.html.decisions(decisionRepository.decisionSpecifiersForUser(userId), newDecisionForm, userId))
         }
       )
@@ -62,8 +65,8 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
         decisionView => {
           log.info("Update valid:" + decisionView)
           var newDecision = decisionRepository.findById(decisionId).get
-          if (decisionView.alternativeName.isDefined) newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get, Set()))
-          if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get, decisionView.criteriaImportance.getOrElse(0)))
+          if (decisionView.alternativeName.isDefined) newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, Set()))
+          if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get.capitalize, decisionView.criteriaImportance.getOrElse(0)))
           log.info("Updated decision:" + newDecision)
           Ok(views.html.decision(newDecision, decisionForm))
         }
