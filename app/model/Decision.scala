@@ -11,6 +11,8 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
   def withNewCriteria(criteria: Criteria)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withNewCriteria(this, criteria)
 
   val criteriaByImportance = criteria.toList.sortBy(_.importance)
+
+  def withModifiedAlternatives(newAlternatives: List[Alternative])(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withModifiedAlternatives(this, newAlternatives)
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)

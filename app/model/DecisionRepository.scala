@@ -44,4 +44,24 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
     criteriaDataStore.insert(CriteriaDTO(criteria.name, criteria.importance, decision.id, criteria.id))
     decision.copy(criteria = decision.criteria + criteria)
   }
+
+  def withModifiedAlternatives(decision: Decision, alternatives: List[Alternative]): Decision = {
+    def storeNewRankings(alternative: Alternative) = alternative.rankings.foreach(ranking => rankingDataStore.insert(RankingDTO(ranking.criteria.id, alternative.id, ranking.rank)))
+    val newAlternatives = alternatives.map(newAlternative => {
+      decision.alternatives.find(_.id == newAlternative.id) match {
+        case None => {
+          alternativeDataStore.insert(AlternativeDTO(newAlternative.name, decision.id, newAlternative.id))
+          storeNewRankings(newAlternative)
+          newAlternative
+        }
+        case Some(existing) => if (existing == newAlternative) existing else {
+          newAlternative.rankings.foreach(ranking => rankingDataStore.delete(newAlternative.id, ranking.criteria.id))
+          storeNewRankings(newAlternative)
+          newAlternative
+        }
+      }
+      newAlternative
+    })
+    decision.copy(alternatives = newAlternatives.toSet)
+  }
 }

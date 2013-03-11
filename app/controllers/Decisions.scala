@@ -69,12 +69,30 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
           var newDecision = decisionRepository.findById(decisionId).get
           if (decisionView.alternativeName.isDefined) newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, Set()))
           if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get.capitalize, decisionView.criteriaImportance.getOrElse(0)))
+          newDecision = updateWithRankings(newDecision, request.body.asFormUrlEncoded.get)
+          newDecision = updateWithImportances(newDecision, request.body.asFormUrlEncoded.get)
           log.info("Updated decision:" + newDecision)
           Ok(views.html.decision(newDecision, decisionForm))
         }
       )
   }
-          //val newDecision = decisionRepository.findById(decisionId).get.withNewAlternative(Alternative(alternativeView.name, Set()))
+
+  private[this] def alternativeCriteriaAndRank(fieldName: String, fieldValue: Seq[String]) = {
+    val pieces = fieldName.split('_')
+    (UUID.fromString(pieces(1)), UUID.fromString(pieces(2)), fieldValue.head.toInt)
+  }
+
+  private[this] def updateWithRankings(decision: Decision, fields: Map[String, Seq[String]]) = {
+    val ranks: List[(UUID, UUID, Int)] = fields.filter(_._1.startsWith("ranking_")).map(pair => alternativeCriteriaAndRank(pair._1, pair._2)).toList
+    def findRankFor(alternativeId: UUID, criteriaId: UUID, default: Int): Int = ranks.find(p => p._1 == alternativeId && p._2 == criteriaId).getOrElse((alternativeId, criteriaId, default))._3
+    val alternatives = decision.copy(alternatives = decision.alternatives.map(alternative => alternative.copy(rankings = alternative.rankings.map(ranking => ranking.copy(rank = findRankFor(alternative.id, ranking.criteria.id, ranking.rank)))))).alternatives
+    decision.withModifiedAlternatives(alternatives.toList)
+  }
+
+  private[this] def updateWithImportances(decision: Decision, fields: Map[String, Seq[String]]) = {
+    decision
+  }
+
 
   def edit(decisionId: UUID) = Action { implicit request =>
     Ok(views.html.decision(decisionRepository.findById(decisionId).get, decisionForm))
