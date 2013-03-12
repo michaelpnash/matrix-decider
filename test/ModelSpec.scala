@@ -75,7 +75,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(modified.criteria(mileage.id).get === mileage)
       assert(criteriaDataStore.findById(mileage.id)(database.createSession).get.id === mileage.id)
     }
-    "can produce a copy of itself with a criteria with updated importance" ignore {
+    "can produce a copy of itself with a criteria with updated importance" in {
       val user = User("name")
       userRepo.save(user)
       val price = Criteria("price", 2)
