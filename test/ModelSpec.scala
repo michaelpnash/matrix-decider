@@ -97,7 +97,28 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
 
       assert(criteriaDataStore.findById(color.id)(database.createSession).get.importance === 5)
     }
-    "can produce a copy of itself with an alternative with new ranking for a certain criteria" in (pending)
+    "can produce a copy of itself with an alternative with new ranking for a specific criteria" in {
+       val user = User("name")
+      userRepo.save(user)
+      val price = Criteria("price", 2)
+      val color = Criteria("color", 1)
+      val gm: Alternative = Alternative("gm",
+        Set(Ranking(price, 5), Ranking(color, 3)))
+      val alternatives = Set(Alternative("ford",
+        Set(Ranking(price, 4), Ranking(color, 2))),
+        gm)
+      val decision = Decision(user, alternatives, Set(price, color), name = "my name")
+      repo.save(decision)
+      assert(repo.findById(decision.id).get.criteria(color.id).get.importance === 1)
+      val updated = decision.withAlternativeRanked(gm, price, 5)
+      assert(updated.alternatives.map(_.id) === decision.alternatives.map(_.id))
+      assert(updated.alternative(gm.id).get.ranking(price.id).get === 5)
+      val found: Decision = repo.findById(decision.id).get
+      assert(found.alternatives.map(_.id) === decision.alternatives.map(_.id))
+      assert(found.alternative(gm.id).get.ranking(price.id).get === 5)
+      assert(found.criteria.size === decision.criteria.size)
+      assert(found.alternatives.map(_.id) === decision.alternatives.map(_.id))
+    }
   }
   "The user repository" - {
     "can find a user by name" in (pending)
