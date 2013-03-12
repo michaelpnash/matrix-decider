@@ -45,23 +45,20 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
     decision.copy(criteria = decision.criteria + criteria)
   }
 
-  def withModifiedAlternatives(decision: Decision, alternatives: List[Alternative]): Decision = {
-    def storeNewRankings(alternative: Alternative) = alternative.rankings.foreach(ranking => rankingDataStore.insert(RankingDTO(ranking.criteria.id, alternative.id, ranking.rank)))
-    val newAlternatives = alternatives.map(newAlternative => {
-      decision.alternatives.find(_.id == newAlternative.id) match {
-        case None => {
-          alternativeDataStore.insert(AlternativeDTO(newAlternative.name, decision.id, newAlternative.id))
-          storeNewRankings(newAlternative)
-          newAlternative
-        }
-        case Some(existing) => if (existing == newAlternative) existing else {
-          newAlternative.rankings.foreach(ranking => rankingDataStore.delete(newAlternative.id, ranking.criteria.id))
-          storeNewRankings(newAlternative)
-          newAlternative
-        }
-      }
-      newAlternative
-    })
-    decision.copy(alternatives = newAlternatives.toSet)
+  def withCriteriaImportance(decision: Decision, updatedCriteria: Criteria, i: Int): Decision = {
+    val existing = decision.criteria(updatedCriteria.id).get
+    if (existing.importance != updatedCriteria.importance) {
+      criteriaDataStore.updateImportance(updatedCriteria.id, i)
+      decision.copy(criteria = decision.criteria.filter(_.id != updatedCriteria.id) + existing.copy(importance = i))
+    } else decision
   }
+
+  def withAlternativeRanked(decision: Decision, alternative: Alternative, criteria: Criteria, ranking: Int) = {
+    decision.alternative(alternative.id).get.rankings.find(_.criteria.id == criteria.id) match {
+      case None => rankingDataStore.insert(RankingDTO(criteria.id, alternative.id, ranking))
+      case Some(existingRanking) => rankingDataStore.updateRanking(criteria.id, alternative.id, ranking)
+    }
+    decision.copy(alternatives = decision.alternatives.filter(_.id != alternative) + decision.alternative(alternative.id).get.copy(rankings = decision.alternative(alternative.id).get.rankings.filter(_.criteria.id != criteria.id) + Ranking(criteria, ranking)))
+  }
+
 }

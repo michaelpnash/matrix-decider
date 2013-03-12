@@ -84,13 +84,23 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
 
   private[this] def updateWithRankings(decision: Decision, fields: Map[String, Seq[String]]) = {
     val ranks: List[(UUID, UUID, Int)] = fields.filter(_._1.startsWith("ranking_")).map(pair => alternativeCriteriaAndRank(pair._1, pair._2)).toList
-    def findRankFor(alternativeId: UUID, criteriaId: UUID, default: Int): Int = ranks.find(p => p._1 == alternativeId && p._2 == criteriaId).getOrElse((alternativeId, criteriaId, default))._3
-    val alternatives = decision.copy(alternatives = decision.alternatives.map(alternative => alternative.copy(rankings = alternative.rankings.map(ranking => ranking.copy(rank = findRankFor(alternative.id, ranking.criteria.id, ranking.rank)))))).alternatives
-    decision.withModifiedAlternatives(alternatives.toList)
+
+    var newDecision = decision
+    ranks.foreach(rank => newDecision = newDecision.withAlternativeRanked(decision.alternative(rank._1).get, decision.criteria(rank._2).get, rank._3))
+
+    newDecision
+  }
+
+  private[this] def criteriaAndImportance(fieldName: String, fieldValue: Seq[String]) = {
+    val pieces = fieldName.split('_')
+    (UUID.fromString(pieces(1)), fieldValue.head.toInt)
   }
 
   private[this] def updateWithImportances(decision: Decision, fields: Map[String, Seq[String]]) = {
-    decision
+    val importances: List[(UUID, Int)] = fields.filter(_._1.startsWith("importance_")).map(pair => criteriaAndImportance(pair._1, pair._2)).toList
+    var newDecision = decision
+    importances.foreach(importance => newDecision = newDecision.withCriteriaImportance(decision.criteria(importance._1).get, importance._2))
+    newDecision
   }
 
 

@@ -12,7 +12,13 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
 
   val criteriaByImportance = criteria.toList.sortBy(_.importance)
 
-  def withModifiedAlternatives(newAlternatives: List[Alternative])(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withModifiedAlternatives(this, newAlternatives)
+  def withCriteriaImportance(criteria: Criteria, importance: Int)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withCriteriaImportance(this, criteria, importance)
+
+  def withAlternativeRanked(alternative: Alternative, criteria: Criteria, ranking: Int)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withAlternativeRanked(this, alternative, criteria, ranking)
+
+  def alternative(id: UUID) = alternatives.find(_.id == id)
+
+  def criteria(id: UUID): Option[Criteria] = criteria.find(_.id == id)
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)

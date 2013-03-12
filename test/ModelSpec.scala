@@ -1,7 +1,7 @@
 import model._
 import model.Alternative
 import model.Criteria
-import model.datastore.{RankingDataStore, AlternativeDataStore, Schema}
+import model.datastore.{CriteriaDataStore, RankingDataStore, AlternativeDataStore, Schema}
 import model.Decision
 import model.User
 import org.scalatest.{BeforeAndAfter, FreeSpec}
@@ -11,11 +11,15 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
   implicit val repo = Global.injector.getInstance(classOf[DecisionRepository])
   val userRepo = Global.injector.getInstance(classOf[UserRepository])
   val alternativeDataStore = Global.injector.getInstance(classOf[AlternativeDataStore])
+  val criteriaDataStore = Global.injector.getInstance(classOf[CriteriaDataStore])
   val rankingDataStore = Global.injector.getInstance(classOf[RankingDataStore])
   val database = Global.injector.getInstance(classOf[Database])
   Schema.createTables(database.createSession)
 
   before {
+    implicit val session = database.createSession
+    alternativeDataStore.clear
+    criteriaDataStore.clear
     repo.clear
     userRepo.clear
   }
@@ -45,10 +49,28 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(modified.alternatives.map(_.id).contains(honda.id))
       assert(alternativeDataStore.findById(honda.id)(database.createSession).isDefined)
     }
-    "can produce a copy of itself with an additional criteria" in (pending)
+    "can produce a copy of itself with an additional criteria" in {
+      val user = User("name")
+      userRepo.save(user)
+      val price = Criteria("price", 2)
+      val color = Criteria("color", 1)
+      val alternatives = Set(Alternative("ford",
+        Set(Ranking(price, 4), Ranking(color, 2))),
+        Alternative("gm",
+          Set(Ranking(price, 5), Ranking(color, 3))))
+      val decision = Decision(user, alternatives, Set(price, color), name = "my name")
+      repo.save(decision)
+      val mileage = Criteria("mileage", 3)
+
+      val modified = decision.withNewCriteria(mileage)
+      assert(modified.criteria(mileage.id).get === mileage)
+      assert(criteriaDataStore.findById(mileage.id)(database.createSession).get.id === mileage.id)
+    }
+    "can produce a copy of itself with a criteria with updated importance" in (pending)
+    "can produce a copy of itself with an alternative with new ranking for a certain criteria" in (pending)
   }
   "The user repository" - {
-    "can do stuff" in (pending)
+    "can find a user by name" in (pending)
   }
 
   "The decision repository" - {
