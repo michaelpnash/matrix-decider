@@ -58,7 +58,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(modified.alternatives.map(_.id).contains(honda.id))
       assert(alternativeDataStore.findById(honda.id)(database.createSession).isDefined)
     }
-    "can produce a copy of itself with an additional criteria" in {
+    "can produce a copy of itself with an additional criteria, saving the new criteria in the data stores" in {
       val user = User("name")
       userRepo.save(user)
       val price = Criteria("price", 2)
@@ -90,7 +90,11 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       val updated = decision.withCriteriaImportance(color, 5)
       assert(updated.criteria.size === 2)
       assert(updated.criteria(color.id).get.importance === 5)
-      assert(repo.findById(decision.id).get.criteria(color.id).get.importance === 5)
+      val found: Decision = repo.findById(decision.id).get
+      assert(found.criteria(color.id).get.importance === 5)
+      assert(found.criteria.size === decision.criteria.size)
+      assert(found.alternatives.map(_.id) === decision.alternatives.map(_.id))
+
       assert(criteriaDataStore.findById(color.id)(database.createSession).get.importance === 5)
     }
     "can produce a copy of itself with an alternative with new ranking for a certain criteria" in (pending)

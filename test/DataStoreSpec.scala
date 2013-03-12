@@ -64,6 +64,20 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
       List(alternative1, alternative2, wrongAlternative).foreach(alternativeDataStore.insert(_))
       assert(alternativeDataStore.findByDecisionId(decisionDto.id).toSet === Set(alternative1, alternative2))
     }
+    "should throw an exception if we try to insert an alternative with the same name as an existing alternative in the same decision" in {
+      val user = UserDTO(UUID.randomUUID, "name")
+      userDataStore.insert(user)
+      val decisionDto = DecisionDTO(user.id, "name", UUID.randomUUID)
+      decisionDataStore.insert(decisionDto)
+      val wrongDecision = DecisionDTO(user.id, "name", UUID.randomUUID)
+      decisionDataStore.insert(wrongDecision)
+      val alternative1 = AlternativeDTO("name 1", decisionDto.id, UUID.randomUUID)
+      val alternative2 = AlternativeDTO(alternative1.name, decisionDto.id, UUID.randomUUID)
+      alternativeDataStore.insert(alternative1)
+      intercept[Exception] {
+        alternativeDataStore.insert(alternative2)
+      }
+    }
   }
   "The criteria data store" - {
     "should insert and retrieve a criteria DTO" in {
