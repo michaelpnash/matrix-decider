@@ -27,13 +27,15 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
     "can produce a list of alternatives ordered by weighted ranking" in {
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)
-      val alternatives = Set(Alternative("ford",
-        Set(Ranking(price, 4), Ranking(color, 2))),
-        Alternative("gm",
-          Set(Ranking(price, 5), Ranking(color, 3))))
+      val gm = Alternative("gm",
+        Set(Ranking(price, 5), Ranking(color, 5)))
+      val ford = Alternative("ford",
+        Set(Ranking(price, 1), Ranking(color, 1)))
+      val alternatives = Set(ford,
+        gm)
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my decision")
       val result = decision.alternativesByPreference
-      assert(result === alternatives)
+      assert(result === List(gm, ford))
     }
     "can produce a list of criteria ordered by importance" in {
       val price = Criteria("price", 2)
@@ -152,6 +154,5 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(specs.size === 1)
       assert(specs.head.name === decision.name)
     }
-    "can persist a modified decision and retrieve it's modified form" in (pending)
   }
 }
