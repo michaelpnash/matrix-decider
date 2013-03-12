@@ -19,6 +19,7 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
   def alternative(id: UUID) = alternatives.find(_.id == id)
 
   def criteria(id: UUID): Option[Criteria] = criteria.find(_.id == id)
+
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)

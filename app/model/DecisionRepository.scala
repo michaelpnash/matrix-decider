@@ -9,7 +9,7 @@ import scala.slick.session.{Database, Session}
 @Singleton
 class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alternativeDataStore: AlternativeDataStore,
                                    criteriaDataStore: CriteriaDataStore,
-                                   rankingDataStore: RankingDataStore, database: Database) {
+                                   rankingDataStore: RankingDataStore, userRepository: UserRepository, database: Database) {
 
   implicit val session = database.createSession
 
@@ -24,11 +24,17 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
 
       Alternative(dto.name, rankings.map(rankingDomain(_, criteria)).toSet, dto.id)
     })
-    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(User("foo"), alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
+    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(userRepository.findById(dto.user).get, alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
   }
   def save(decision: Decision): Decision = {
-
-    decisionDataStore.insert(DecisionDTO(decision.user.id, decision.name, decision.id))
+    database.withTransaction { implicit session: Session =>
+      decisionDataStore.insert(DecisionDTO(decision.user.id, decision.name, decision.id))
+      decision.alternatives.foreach(alternative => {
+        alternativeDataStore.insert(AlternativeDTO(alternative.name, decision.id, alternative.id))
+        alternative.rankings.foreach(ranking => rankingDataStore.insert(RankingDTO(ranking.criteria.id, alternative.id, ranking.rank)))
+      })
+      decision.criteria.foreach(criteria => criteriaDataStore.insert(CriteriaDTO(criteria.name, criteria.importance, decision.id, criteria.id)))
+    }
     decision
   }
   def decisionSpecifiersForUser(id: UUID): Seq[DecisionSpecifier] = decisionDataStore.findForUser(id).map(dto => DecisionSpecifier(dto.id, dto.name))
@@ -47,9 +53,9 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
 
   def withCriteriaImportance(decision: Decision, updatedCriteria: Criteria, i: Int): Decision = {
     val existing = decision.criteria(updatedCriteria.id).get
-    if (existing.importance != updatedCriteria.importance) {
+    if (existing.importance != i) {
       criteriaDataStore.updateImportance(updatedCriteria.id, i)
-      decision.copy(criteria = decision.criteria.filter(_.id != updatedCriteria.id) + existing.copy(importance = i))
+      decision.copy(criteria = decision.criteria.filter(_.id != existing.id) + existing.copy(importance = i))
     } else decision
   }
 

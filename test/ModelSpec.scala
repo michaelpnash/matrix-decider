@@ -35,7 +35,16 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       val result = decision.alternativesByPreference
       assert(result === alternatives)
     }
-    "can produce a list of criteria ordered by importance" in (pending)
+    "can produce a list of criteria ordered by importance" in {
+      val price = Criteria("price", 2)
+      val color = Criteria("color", 1)
+      val alternatives = Set(Alternative("ford",
+        Set(Ranking(price, 4), Ranking(color, 2))),
+        Alternative("gm",
+          Set(Ranking(price, 5), Ranking(color, 3))))
+      val decision = Decision(User("name"), alternatives, Set(price, color), name = "my decision")
+      assert(decision.criteriaByImportance === List(color, price))
+    }
     "can produce a copy of itself with an additional alternative, saving the new alternative in the data stores" in {
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)
@@ -66,7 +75,24 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(modified.criteria(mileage.id).get === mileage)
       assert(criteriaDataStore.findById(mileage.id)(database.createSession).get.id === mileage.id)
     }
-    "can produce a copy of itself with a criteria with updated importance" in (pending)
+    "can produce a copy of itself with a criteria with updated importance" ignore {
+      val user = User("name")
+      userRepo.save(user)
+      val price = Criteria("price", 2)
+      val color = Criteria("color", 1)
+      val alternatives = Set(Alternative("ford",
+        Set(Ranking(price, 4), Ranking(color, 2))),
+        Alternative("gm",
+          Set(Ranking(price, 5), Ranking(color, 3))))
+      val decision = Decision(user, alternatives, Set(price, color), name = "my name")
+      repo.save(decision)
+      assert(repo.findById(decision.id).get.criteria(color.id).get.importance === 1)
+      val updated = decision.withCriteriaImportance(color, 5)
+      assert(updated.criteria.size === 2)
+      assert(updated.criteria(color.id).get.importance === 5)
+      assert(repo.findById(decision.id).get.criteria(color.id).get.importance === 5)
+      assert(criteriaDataStore.findById(color.id)(database.createSession).get.importance === 5)
+    }
     "can produce a copy of itself with an alternative with new ranking for a certain criteria" in (pending)
   }
   "The user repository" - {
@@ -89,7 +115,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(saved === decision)
       val retrieved = repo.findById(decision.id)
       assert(retrieved.isDefined)
-      //assert(retrieved.get === decision)
+      assert(retrieved.get === decision)
     }
     "can produce a list of all decision names associated with a user" in {
       val user = User("name")
