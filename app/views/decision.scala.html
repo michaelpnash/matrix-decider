@@ -14,8 +14,9 @@ Alternatives are the items from which you must choose. Each alternative will be 
                     @for(criteria <- decision.criteriaByImportance) {
                         <th>@criteria.name</th>
                     }
+                    <th>Score</th>
                 </tr>
-                @for(alternative <- decision.alternatives) {
+                @for(alternative <- decision.alternativesByPreference) {
                 <tr>
                       <td>@alternative.name</td>
                       @for(criteria <- decision.criteriaByImportance) {
@@ -26,6 +27,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
 
                         </td>
                       }
+                    <td>@alternative.score</td>
                 </tr>
                 }
                 <tr>

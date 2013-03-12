@@ -98,7 +98,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(criteriaDataStore.findById(color.id)(database.createSession).get.importance === 5)
     }
     "can produce a copy of itself with an alternative with new ranking for a specific criteria" in {
-       val user = User("name")
+      val user = User("name")
       userRepo.save(user)
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)

@@ -4,7 +4,7 @@ import java.util.UUID
 
 case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Criteria], id: UUID = UUID.randomUUID, name: String) {
 
-  def alternativesByPreference = alternatives //TODO
+  def alternativesByPreference = alternatives.toList.sortBy(_.score * -1)
 
   def withNewAlternative(alternative: Alternative)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withNewAlternative(this, alternative)
 
@@ -27,6 +27,7 @@ case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)
 
 case class Alternative(name: String, rankings: Set[Ranking], id: UUID = UUID.randomUUID) {
   def ranking(criteriaId: UUID): Option[Int] = rankings.find(_.criteria.id == criteriaId).map(_.rank)
+  def score = rankings.foldLeft(0)((score, rank) => score + rank.criteria.importance * rank.rank)
 }
 
 case class Ranking(criteria: Criteria, rank: Int)

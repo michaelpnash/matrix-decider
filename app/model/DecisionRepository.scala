@@ -68,7 +68,7 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
       case None => rankingDataStore.insert(RankingDTO(criteria.id, alternative.id, ranking))
       case Some(existingRanking) => rankingDataStore.updateRanking(criteria.id, alternative.id, ranking)
     }
-    decision.copy(alternatives = decision.alternatives.filter(_.id != alternative) + decision.alternative(alternative.id).get.copy(rankings = decision.alternative(alternative.id).get.rankings.filter(_.criteria.id != criteria.id) + Ranking(criteria, ranking)))
+    decision.copy(alternatives = decision.alternatives.filter(_.id != alternative.id) + decision.alternative(alternative.id).get.copy(rankings = decision.alternative(alternative.id).get.rankings.filter(_.criteria.id != criteria.id) + Ranking(criteria, ranking)))
   }
 
 }

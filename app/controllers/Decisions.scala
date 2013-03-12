@@ -67,8 +67,14 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
         decisionView => {
           log.info("Update valid:" + decisionView)
           var newDecision = decisionRepository.findById(decisionId).get
-          if (decisionView.alternativeName.isDefined) newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, Set()))
-          if (decisionView.criteriaName.isDefined) newDecision = newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get.capitalize, decisionView.criteriaImportance.getOrElse(0)))
+          if (decisionView.alternativeName.isDefined) {
+            log.info("Adding alternative " + decisionView.alternativeName.get)
+            newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, Set()))
+          }
+          if (decisionView.criteriaName.isDefined) newDecision = {
+            log.info("Adding criteria " + decisionView.criteriaName.get)
+            newDecision.withNewCriteria(Criteria(decisionView.criteriaName.get.capitalize, decisionView.criteriaImportance.getOrElse(0)))
+          }
           newDecision = updateWithRankings(newDecision, request.body.asFormUrlEncoded.get)
           newDecision = updateWithImportances(newDecision, request.body.asFormUrlEncoded.get)
           log.info("Updated decision:" + newDecision)
