@@ -20,14 +20,10 @@ Alternatives are the items from which you must choose. Each alternative will be 
                       <td>@alternative.name</td>
                       @for(criteria <- decision.criteriaByImportance) {
                         <td>
-                            <select name="selectionField">
-                              <option value="0" >Worst</option>
-                              <option value="1" >Very Poor</option>
-                              <option value="2" >Poor</option>
-                              <option value="3" >Medium</option>
-                              <option value="4" >Good</option>
-                              <option value="5" >Best</option>
-                            </select>
+                             <div class="inputfield">
+                            @select(field=decisionForm("criteriaImportance").copy(value = Some(decision.ranking(alternative.id, criteria.id).getOrElse(0).toString), name = "ranking_" + alternative.id.toString + "_" + criteria.id.toString),options=controllers.Decisions.rankings, '_label -> "")
+                            </div>
+
                         </td>
                       }
                 </tr>
@@ -40,6 +36,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
                     </td>
                     @for(criteria <- decision.criteriaByImportance) {
                         <td>
+                            <div class="inputfield">
                             <select name="selectionField">
                               <option value="0" >Worst</option>
                               <option value="1" >Very Poor</option>
@@ -48,6 +45,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
                               <option value="4" >Good</option>
                               <option value="5" >Best</option>
                             </select>
+                            </div>
                         </td>
                       }
                 </tr>

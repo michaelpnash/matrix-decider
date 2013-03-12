@@ -20,11 +20,14 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
 
   def criteria(id: UUID): Option[Criteria] = criteria.find(_.id == id)
 
+  def ranking(alternativeId: UUID, criteriaId: UUID): Option[Int] = alternatives.find(_.id == alternativeId).map(_.ranking(criteriaId).getOrElse(0))
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)
 
-case class Alternative(name: String, rankings: Set[Ranking], id: UUID = UUID.randomUUID)
+case class Alternative(name: String, rankings: Set[Ranking], id: UUID = UUID.randomUUID) {
+  def ranking(criteriaId: UUID): Option[Int] = rankings.find(_.criteria.id == criteriaId).map(_.rank)
+}
 
 case class Ranking(criteria: Criteria, rank: Int)
 

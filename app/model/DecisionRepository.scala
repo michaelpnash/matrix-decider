@@ -5,6 +5,7 @@ import com.google.inject.{Inject, Singleton}
 import model.datastore.{RankingDataStore, CriteriaDataStore, AlternativeDataStore, DecisionDataStore}
 import model.datastore.Schema.{RankingDTO, CriteriaDTO, AlternativeDTO, DecisionDTO}
 import scala.slick.session.{Database, Session}
+import play.api.Logger
 
 @Singleton
 class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alternativeDataStore: AlternativeDataStore,
@@ -12,6 +13,7 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
                                    rankingDataStore: RankingDataStore, userRepository: UserRepository, database: Database) {
 
   implicit val session = database.createSession
+  val log = Logger.logger
 
   def criteriaDomain(dto: CriteriaDTO) = Criteria(dto.name, dto.importance, dto.id)
   implicit def criteriaSet(dtoSet: Set[CriteriaDTO]) = dtoSet.map(criteriaDomain(_))
@@ -52,6 +54,7 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
   }
 
   def withCriteriaImportance(decision: Decision, updatedCriteria: Criteria, i: Int): Decision = {
+    log.info("Setting criteria importance for " + updatedCriteria.name + " to " + i)
     val existing = decision.criteria(updatedCriteria.id).get
     if (existing.importance != i) {
       criteriaDataStore.updateImportance(updatedCriteria.id, i)
@@ -60,6 +63,7 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
   }
 
   def withAlternativeRanked(decision: Decision, alternative: Alternative, criteria: Criteria, ranking: Int) = {
+    log.info("Ranking alternative " + alternative.name + " on criteria " + criteria.name + " as " + ranking)
     decision.alternative(alternative.id).get.rankings.find(_.criteria.id == criteria.id) match {
       case None => rankingDataStore.insert(RankingDTO(criteria.id, alternative.id, ranking))
       case Some(existingRanking) => rankingDataStore.updateRanking(criteria.id, alternative.id, ranking)
