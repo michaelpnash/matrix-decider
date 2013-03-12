@@ -21,6 +21,8 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
   def criteria(id: UUID): Option[Criteria] = criteria.find(_.id == id)
 
   def ranking(alternativeId: UUID, criteriaId: UUID): Option[Int] = alternatives.find(_.id == alternativeId).map(_.ranking(criteriaId).getOrElse(0))
+
+  def bestPossibleScore = 5 * 5 * criteria.size
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)

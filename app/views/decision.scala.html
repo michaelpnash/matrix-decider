@@ -27,7 +27,7 @@ Alternatives are the items from which you must choose. Each alternative will be 
 
                         </td>
                       }
-                    <td>@alternative.score</td>
+                    <td align="right">@{"%2.0f".format((alternative.score.toFloat / decision.bestPossibleScore.toFloat).toFloat * 100.00)}%</td>
                 </tr>
                 }
                 <tr>
