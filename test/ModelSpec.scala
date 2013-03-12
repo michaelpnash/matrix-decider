@@ -125,7 +125,11 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
     }
   }
   "The user repository" - {
-    "can find a user by name" in (pending)
+    "can save a user and find a user by name" in {
+      val joe = User("joe")
+      userRepo.save(joe)
+      assert(userRepo.findByName(joe.name).get === joe)
+    }
   }
 
   "The decision repository" - {
