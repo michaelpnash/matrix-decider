@@ -84,10 +84,8 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       userRepo.save(user)
       val price = Criteria("price", 2)
       val color = Criteria("color", 1)
-      val alternatives = Set(Alternative("ford",
-        Set(Ranking(price, 4), Ranking(color, 2))),
-        Alternative("gm",
-          Set(Ranking(price, 5), Ranking(color, 3))))
+      val alternatives = Set(Alternative("ford", Set(Ranking(price, 4), Ranking(color, 2))),
+        Alternative("gm", Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(user, alternatives, Set(price, color), name = "my name")
       repo.save(decision)
       assert(repo.findById(decision.id).get.criteria(color.id).get.importance === 1)

@@ -10,7 +10,7 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
 
   def withNewCriteria(criteria: Criteria)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withNewCriteria(this, criteria)
 
-  val criteriaByImportance = criteria.toList.sortBy(_.importance)
+  val criteriaByImportance = criteria.toList.sortBy(_.importance * -1)
 
   def withCriteriaImportance(criteria: Criteria, importance: Int)(implicit decisionRepository: DecisionRepository): Decision = decisionRepository.withCriteriaImportance(this, criteria, importance)
 
