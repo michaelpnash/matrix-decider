@@ -13,7 +13,8 @@ object Global extends GlobalSettings {
 }
 
 class DeciderModule extends AbstractModule {
-  val dbUrl = "jdbc:hsqldb:mem:testdb"
+  val dbSuffix = System.getProperty("db", "mem:testdb")
+  val dbUrl = "jdbc:hsqldb:" + dbSuffix
 
   override def configure() {
     bind(classOf[Database]).toInstance(Database.forURL(dbUrl, driver = "org.hsqldb.jdbc.JDBCDriver"))
