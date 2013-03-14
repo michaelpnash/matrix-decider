@@ -2,7 +2,7 @@
 
 @import helper._
 
-@main("Decisions") {
+@main("My Decisions") {
   @if(decisions.size == 0) {
     <p>You do not have any stored decisions yet.</p>
   } else {
@@ -24,6 +24,7 @@
       <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
         @Messages("newdecision")
       </button>
+      <a href="@routes.Application.index">Log Out</a>
     </div>
   }
 }
