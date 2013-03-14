@@ -23,6 +23,12 @@ case class Decision(user: User, alternatives: Set[Alternative], criteria: Set[Cr
   def ranking(alternativeId: UUID, criteriaId: UUID): Option[Int] = alternatives.find(_.id == alternativeId).map(_.ranking(criteriaId).getOrElse(0))
 
   def bestPossibleScore = criteria.filter(_.importance > 0).foldLeft(0)((max, criteria) => max + criteria.importance) * 5
+
+  def formattedPercentageScore(alternativeId: UUID) = {
+    if (bestPossibleScore > 0)
+      "%2.0f".format((alternative(alternativeId).get.score.toFloat / bestPossibleScore.toFloat) * 100.00) + "%"
+    else "N/A"
+  }
 }
 
 case class Criteria(name: String, importance: Int, id: UUID = UUID.randomUUID)

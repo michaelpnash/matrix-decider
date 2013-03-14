@@ -30,13 +30,13 @@
                     </div>
                   </td>
                 }
-                <td align="right">@{"%2.0f".format((alternative.score.toFloat / decision.bestPossibleScore.toFloat).toFloat * 100.00)}%</td>
+                <td align="right">@decision.formattedPercentageScore(alternative.id)</td>
               </tr>
             }
             <tr>
               <td>
                 <div class="inputfield">
-                    @inputText(decisionForm("alternativeName"))
+                  @inputText(decisionForm("alternativeName"))
                 </div>
               </td>
               @if(decision.criteria.isEmpty) {
@@ -55,39 +55,37 @@
         </div>
 
         <div class="section">
-            <p>Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
-            will specify a relative score for each criteria. For each criteria, you can specify a relative importance here. Add a new criteria by entering it's name in the empty row at the bottom of the table.</p>
+          <p>Criteria are the items on which you may judge the relative merits of each alternative. For each alternative, you
+          will specify a relative score for each criteria. For each criteria, you can specify a relative importance here. Add a new criteria by entering it's name in the empty row at the bottom of the table.</p>
 
-            <table class="ranking-table">
-                <tr>
-                  <th>Criteria</th>
-                  <th>Importance</th>
-                </tr>
-                @for(criteria <- decision.criteria) {
-                    <tr>
-                        <td>@criteria.name</td>
-                        <td>
-                          <div class="inputfield">
-                            @select(field=decisionForm("criteriaImportance").copy(value = Some(criteria.importance.toString), name = "importance_" + criteria.id.toString),options=controllers.Decisions.importances, '_label -> "")
-                          </div>
-                        </td>
-                    </tr>
-                }
-                <tr>
-                    <td>
-                        <div class="inputfield">
-                            @inputText(decisionForm("criteriaName"))
-                        </div>
-                    </td>
-                    <td>
-                        <div class="inputfield">
-                            @select(field=decisionForm("criteriaImportance"),options=controllers.Decisions.importances)
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-
+          <table class="ranking-table">
+            <tr>
+              <th>Criteria</th>
+              <th>Importance</th>
+            </tr>
+            @for(criteria <- decision.criteriaByImportance) {
+              <tr>
+                <td>@criteria.name</td>
+                <td>
+                  <div class="inputfield">
+                    @select(field=decisionForm("criteriaImportance").copy(value = Some(criteria.importance.toString), name = "importance_" + criteria.id.toString),options=controllers.Decisions.importances, '_label -> "")
+                  </div>
+                </td>
+              </tr>
+            }
+            <tr>
+              <td>
+                <div class="inputfield">
+                  @inputText(decisionForm("criteriaName"))
+                </div>
+              </td>
+              <td>
+                <div class="inputfield">
+                  @select(field=decisionForm("criteriaImportance"),options=controllers.Decisions.importances)
+                </div>
+              </td>
+            </tr>
+          </table>
         </div>
 
           <button type="submit" name="action" class="btn btn-primary" value="login" title="Update this Decision">

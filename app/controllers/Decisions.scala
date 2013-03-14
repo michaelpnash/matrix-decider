@@ -16,7 +16,7 @@ case class DecisionView(alternativeName: Option[String], criteriaName: Option[St
 
 object Decisions {
   val importances = Map("0"->"Irrelevant", "1"->"Trivial", "2"->"Somewhat Important", "3"->"Important", "4"->"Very Important","5"->"Extremely Important").toSeq.sortBy(_._1)
-  val rankings =  Map("0" -> "Worst", "1" -> "Very Poor", "2" -> "Poor",
+  val rankings =  Map("0" -> "Not Ranked", "1" -> "Very Poor", "2" -> "Poor",
                               "3" -> "Medium", "4" -> "Good", "5" -> "Best").toSeq.sortBy(_._1)
 }
 @Singleton

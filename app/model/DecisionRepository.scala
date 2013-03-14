@@ -28,6 +28,7 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
     })
     decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(userRepository.findById(dto.user).get, alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
   }
+
   def save(decision: Decision): Decision = {
     database.withTransaction { implicit session: Session =>
       decisionDataStore.insert(DecisionDTO(decision.user.id, decision.name, decision.id))
