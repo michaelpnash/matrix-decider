@@ -69,7 +69,8 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
           var newDecision = decisionRepository.findById(decisionId).get
           if (decisionView.alternativeName.isDefined) {
             log.info("Adding alternative " + decisionView.alternativeName.get)
-            newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, Set()))
+            val rankings = request.body.asFormUrlEncoded.get.filter(_._1.startsWith("newalternativeranking_")).map(pair => newAlternativeRanking(pair._1, pair._2)).map(criteriaIdAndRank => Ranking(newDecision.criteria(criteriaIdAndRank._1).get, criteriaIdAndRank._2))
+            newDecision = newDecision.withNewAlternative(Alternative(decisionView.alternativeName.get.capitalize, rankings.toSet))
           }
           if (decisionView.criteriaName.isDefined) newDecision = {
             log.info("Adding criteria " + decisionView.criteriaName.get)
@@ -81,6 +82,11 @@ class Decisions @Inject()(implicit val decisionRepository: DecisionRepository, u
           Ok(views.html.decision(newDecision, decisionForm))
         }
       )
+  }
+
+  private[this] def newAlternativeRanking(fieldName: String, fieldValue: Seq[String]): (UUID, Int) = {
+    val pieces = fieldName.split('_')
+    (UUID.fromString(pieces(1)), fieldValue.head.toInt)
   }
 
   private[this] def alternativeCriteriaAndRank(fieldName: String, fieldValue: Seq[String]) = {
