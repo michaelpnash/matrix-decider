@@ -17,7 +17,7 @@
               }
               <th>Score</th>
             </tr>
-              @for(alternative <- decision.alternativesByPreference) {
+            @for(alternative <- decision.alternativesByPreference) {
               <tr>
                 <td>@alternative.name</td>
                 @for(criteria <- decision.criteriaByImportance) {
@@ -32,21 +32,24 @@
                 }
                 <td align="right">@{"%2.0f".format((alternative.score.toFloat / decision.bestPossibleScore.toFloat).toFloat * 100.00)}%</td>
               </tr>
+            }
+            <tr>
+              <td>
+                <div class="inputfield">
+                    @inputText(decisionForm("alternativeName"))
+                </div>
+              </td>
+              @if(decision.criteria.isEmpty) {
+                <td>&nbsp;</td>
               }
-              <tr>
+              @for(criteria <- decision.criteriaByImportance) {
                 <td>
                   <div class="inputfield">
-                      @inputText(decisionForm("alternativeName"))
+                    @select(field=decisionForm("criteriaImportance").copy(value = Some("0"), name = "newalternativeranking_" + criteria.id.toString), options=controllers.Decisions.rankings, '_label -> "")
                   </div>
                 </td>
-                @for(criteria <- decision.criteriaByImportance) {
-                  <td>
-                    <div class="inputfield">
-                      @select(field=decisionForm("criteriaImportance").copy(value = Some("0"), name = "newalternativeranking_" + criteria.id.toString), options=controllers.Decisions.rankings, '_label -> "")
-                    </div>
-                  </td>
-                }
-              </tr>
+              }
+            </tr>
           </table>
           <br/>
         </div>
