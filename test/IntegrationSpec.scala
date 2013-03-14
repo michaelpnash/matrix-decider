@@ -21,8 +21,8 @@ class IntegrationSpec extends FreeSpec {
             browser.pageSource contains ("Log In")
           }
           browser.$("#username").text("joe")
-          browser.$("#action").click()
-          assert(browser.title() === "Matrix Decider")
+          browser.$("#submit").click()
+          assert(browser.title() === "Decisions")
       }
     }
   }

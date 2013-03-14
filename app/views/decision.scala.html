@@ -3,7 +3,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main {
+@main("Decision") {
     <p><strong>Decision:</strong>@decision.name</p>
      @form(routes.Decisions.update(decision.id)) {
       <div class="section">

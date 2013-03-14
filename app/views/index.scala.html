@@ -3,7 +3,7 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main {
+@main("Matrix Decider") {
     <p>This application helps you make a decision by organizing the
     alternatives for a decision, the criteria for comparing those
     alternatives, and the ranking of each alternative according to those
@@ -20,7 +20,7 @@
       @inputText(loginForm("username"))
     </div>
     <div class="form-actions">
-      <button type="submit" name="action" class="btn btn-primary" value="login" title="Log in to Matrix-Decider">
+      <button type="submit" id="submit" name="action" class="btn btn-primary" value="login" title="Log in to Matrix-Decider">
         @Messages("login")
       </button>
     </div>
