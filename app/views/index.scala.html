@@ -4,29 +4,25 @@
 @import helper.twitterBootstrap._
 
 @main {
+    <p>This application helps you make a decision by organizing the
+    alternatives for a decision, the criteria for comparing those
+    alternatives, and the ranking of each alternative according to those
+    criteria. By taking the relative importance and the ranking into
+    account together, support can be given for a specific alternative.</p>
 
-        <p>Matrix Decider</p>
-        <p>This application helps you make a decision by organizing the
-        alternatives for a decision, the criteria for comparing those
-        alternatives, and the ranking of each alternative according to those
-        criteria. By taking the relative importance and the ranking into
-        account together, support can be given for a specific alternative.</p>
+    <p>Decisions are stored by user name - you can use any name you want,
+    even an email address, but make sure you remember it. </p>
+    <p>There is no security on your decisions for this version, so proceed
+    at your own risk.</p>
 
-        <p>Decisions are stored by user name - you can use any name you want,
-        even an email address, but make sure you remember it. </p>
-        <p>There is no security on your decisions for this version, so proceed
-        at your own risk.</p>
-
-@form(routes.Application.login) {
-    <fieldset>
-        <div class="inputfield">
-            @inputText(loginForm("username"))
-        </div>
-    </fieldset>
+  @form(routes.Application.login) {
+    <div class="inputfield">
+      @inputText(loginForm("username"))
+    </div>
     <div class="form-actions">
       <button type="submit" name="action" class="btn btn-primary" value="login" title="Log in to Matrix-Decider">
         @Messages("login")
       </button>
-</div> }
-
+    </div>
+  }
 }

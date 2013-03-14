@@ -3,21 +3,27 @@
 @import helper._
 
 @main {
-    <p>Your Decisions</p>
+  @if(decisions.size == 0) {
+    <p>You do not have an stored decisions yet</p>
+  } else {
+    <p>Your Saved Decisions</p>
     <ul>
-        @for(decision <- decisions) {
-            <dt><a href="@routes.Decisions.edit(decision.id)">@decision.name</a></dt>
-        }
+      @for(decision <- decisions) {
+        <dt><a href="@routes.Decisions.edit(decision.id)">@decision.name</a></dt>
+      }
     </ul>
+    <p>Click on a decision to work with it</p>
+  }
 
-        @form(routes.Decisions.newDecision(userId)) {
-    <fieldset>
-        <legend>Create A New Decision</legend>
-        @inputText(decisionForm("name"))
-    </fieldset>
+  @form(routes.Decisions.newDecision(userId)) {
+    <p>You can create a new decision by typing a name for the decision below and clicking the button. An example name for a decision might be "Buy A Car".</p>
+    <div class="inputfield">
+      @inputText(decisionForm("name"))
+    </div>
     <div class="form-actions">
       <button type="submit" name="action" class="btn btn-primary" value="login" title="Create a new Decision">
         @Messages("newdecision")
       </button>
-</div> }
+    </div>
+  }
 }

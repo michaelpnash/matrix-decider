@@ -13,7 +13,7 @@ class Application @Inject()(userRepository: UserRepository) extends Controller {
 
   private val loginForm: Form[LoginView] = Form(
     mapping(
-      "username" -> nonEmptyText //.verifying("No such user", userRepository.findByName(_).isDefined)
+      "username" -> nonEmptyText
     )(LoginView.apply)(LoginView.unapply)
   )
 

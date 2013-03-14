@@ -18,7 +18,6 @@ class ApplicationSpec extends FreeSpec {
       "should render the index page" in {
         running(FakeApplication()) {
           val home = route(FakeRequest(GET, "/")).get
-
           assert(status(home) === OK)
           assert(contentType(home) === Some("text/html"))
           assert(contentAsString(home) contains ("Matrix Decider"))
@@ -29,7 +28,6 @@ class ApplicationSpec extends FreeSpec {
           val home = route(FakeRequest(GET, routes.Decisions.list(UUID.randomUUID).url)).get
           assert(status(home) === OK)
           assert(contentType(home) === Some("text/html"))
-
         }
       }
     }
