@@ -13,9 +13,9 @@ class AlternativeDataStore @Inject()() extends SQLDataStore[AlternativeDTO] {
 
   def insert(dto: AlternativeDTO)(implicit session: Session) = Alternatives.insert(dto)
 
-  def findByDecisionId(id: UUID)(implicit session: Session) = Alternatives.filter(_.decisionId === id.bind).to[Seq]
+  def findByDecisionId(id: UUID)(implicit session: Session) = Query(Alternatives).filter(_.decisionId === id.bind).to[Seq]
 
-  def findById(id: UUID)(implicit session: Session) = Alternatives.filter(_.id === id.bind).firstOption
+  def findById(id: UUID)(implicit session: Session) = Query(Alternatives).filter(_.id === id.bind).firstOption
 
   def clear(implicit session: Session) { Query(Alternatives).delete }
 }

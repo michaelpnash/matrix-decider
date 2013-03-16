@@ -21,12 +21,12 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
 
   def findById(id: UUID): Option[Decision] = {
     val criteria:Map[UUID, CriteriaDTO] = criteriaDataStore.findByDecisionId(id).map(dto => (dto.id, dto)).toMap
-    val alternatives = alternativeDataStore.findByDecisionId(id).map(_.asInstanceOf[AlternativeDTO]).map(dto => {
+    val alternatives = alternativeDataStore.findByDecisionId(id).map(dto => {
       val rankings = criteriaDataStore.findByDecisionId(id).map(criteriaDto => rankingDataStore.findByAlternativeIdAndCriteriaId(dto.id, criteriaDto.id)).flatten
 
       Alternative(dto.name, rankings.map(rankingDomain(_, criteria)).toSet, dto.id)
     })
-    decisionDataStore.findById(id).asInstanceOf[Option[DecisionDTO]].map(dto => Decision(userRepository.findById(dto.user).get, alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
+    decisionDataStore.findById(id).map(dto => Decision(userRepository.findById(dto.user).get, alternatives.toSet, criteria.values.map(criteriaDomain(_)).toSet, dto.id, dto.name))
   }
 
   def save(decision: Decision): Decision = {

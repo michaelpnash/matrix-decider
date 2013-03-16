@@ -14,10 +14,10 @@ class RankingDataStore @Inject()() extends SQLDataStore[RankingDTO] {
 
   def insert(dto: RankingDTO)(implicit session: Session) = Rankings.insert(dto)
 
-  def findByAlternativeId(id: UUID)(implicit session: Session) = Rankings.filter(_.alternativeId === id.bind).to[Seq]
+  def findByAlternativeId(id: UUID)(implicit session: Session) = Query(Rankings).filter(_.alternativeId === id.bind).to[Seq]
 
   def findByAlternativeIdAndCriteriaId(alternativeId: UUID, criteriaId: UUID)(implicit session: Session) =
-    Rankings.filter(r => r.alternativeId === alternativeId.bind && r.criteriaId === criteriaId.bind).firstOption.asInstanceOf[Option[RankingDTO]]
+    Query(Rankings).filter(r => r.alternativeId === alternativeId.bind && r.criteriaId === criteriaId.bind).firstOption
 
   def updateRanking(alternativeId: UUID, criteriaId: UUID, i: Int)(implicit session: Session) =  Query(Rankings).filter(r => r.alternativeId === alternativeId.bind && r.criteriaId === criteriaId.bind).foreach { case entity: RankingDTO =>
        (for(u <- Rankings) yield u) update (entity.copy(rank = i))

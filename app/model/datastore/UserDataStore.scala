@@ -12,9 +12,9 @@ import java.util.UUID
 class UserDataStore @Inject()() extends SQLDataStore[UserDTO] {
   def insert(dto: UserDTO)(implicit session: Session) = Users.insert(dto)
 
-  def findById(id: UUID)(implicit session: Session) = Users.filter(_.id === id.bind).elements.toSet.headOption.asInstanceOf[Option[UserDTO]]
+  def findById(id: UUID)(implicit session: Session) = Query(Users).filter(_.id === id.bind).firstOption
 
-  def findByName(name: String)(implicit session: Session) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
+  def findByName(name: String)(implicit session: Session) = Query(Users).filter(_.name === name).firstOption
 
   def clear(implicit session: Session) { Query(Users).delete }
 }
