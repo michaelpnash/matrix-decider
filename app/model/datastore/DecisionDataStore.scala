@@ -14,14 +14,14 @@ class DecisionDataStore @Inject()() extends SQLDataStore[DecisionDTO] {
 
   def insert(dto: DecisionDTO)(implicit session: Session) = Decisions.insert(dto)
 
-  def findById(id: UUID)(implicit session: Session) = Decisions.filter(_.id === id.bind).to[Seq].headOption
+  def findById(id: UUID)(implicit session: Session) = Query(Decisions).filter(_.id === id.bind).firstOption
 
-  def findForUser(id: UUID)(implicit session: Session) = Decisions.filter(_.userId === id.bind).elements.to[Seq].asInstanceOf[Seq[DecisionDTO]]
+  def findForUser(id: UUID)(implicit session: Session) = Query(Decisions).filter(_.userId === id.bind).elements.to[Seq]
 
   def update(dto: DecisionDTO)(implicit session: Session) = {
-    require(findById(dto.id).isDefined, "No such decision")
-    Decisions.filter(_.id === dto.id.bind).foreach { case entity: DecisionDTO =>
-      (for(u <- Decisions if u.id === dto.id.bind) yield u) update (dto)
-    }
+    val q = for { dec <- Decisions if dec.id === dto.id.bind } yield dec
+    require(q.update(dto) == 1)
   }
+
+  def clear(implicit session: Session) { Query(Decisions).delete }
 }

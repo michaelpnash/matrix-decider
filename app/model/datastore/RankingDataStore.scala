@@ -22,4 +22,6 @@ class RankingDataStore @Inject()() extends SQLDataStore[RankingDTO] {
   def updateRanking(alternativeId: UUID, criteriaId: UUID, i: Int)(implicit session: Session) =  Query(Rankings).filter(r => r.alternativeId === alternativeId.bind && r.criteriaId === criteriaId.bind).foreach { case entity: RankingDTO =>
        (for(u <- Rankings) yield u) update (entity.copy(rank = i))
     }
+
+  def clear(implicit session: Session) { Query(Rankings).delete }
 }

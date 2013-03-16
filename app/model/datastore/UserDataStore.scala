@@ -10,11 +10,11 @@ import java.util.UUID
 
 @Singleton
 class UserDataStore @Inject()() extends SQLDataStore[UserDTO] {
-  val table = Users.tableName
-
   def insert(dto: UserDTO)(implicit session: Session) = Users.insert(dto)
 
   def findById(id: UUID)(implicit session: Session) = Users.filter(_.id === id.bind).elements.toSet.headOption.asInstanceOf[Option[UserDTO]]
 
   def findByName(name: String)(implicit session: Session) = Users.filter(_.name === name).to[Seq].headOption.asInstanceOf[Option[UserDTO]]
+
+  def clear(implicit session: Session) { Query(Users).delete }
 }

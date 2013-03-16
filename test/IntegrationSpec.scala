@@ -22,7 +22,7 @@ class IntegrationSpec extends FreeSpec {
           }
           browser.$("#username").text("joe")
           browser.$("#submit").click()
-          assert(browser.title() === "Decisions")
+          assert(browser.title() === "My Decisions")
       }
     }
   }

@@ -47,7 +47,7 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
         Alternative("gm",
           Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my decision")
-      assert(decision.criteriaByImportance === List(color, price))
+      assert(decision.criteriaByImportance === List(price, color))
     }
     "can produce a copy of itself with an additional alternative, saving the new alternative in the data stores" in {
       val price = Criteria("price", 2)

@@ -18,10 +18,6 @@ trait SQLDataStore[T] {
     names.toList
   }
 
-  def table: String
-
-  def clear(implicit session: Session) = {
-    StaticQuery.updateNA("delete from " + table).execute
-  }
+  def clear(implicit session: Session)
 
 }
