@@ -3,7 +3,7 @@ matrix-decider
 
 Simple webapp for making rational decisions amongst several competing alternatives.
 
-A [running version can be found here](http://http://50.116.19.42:9000/) if you'd like to experiment.
+A [running version can be found here](http://50.116.19.42:9000/) if you'd like to experiment.
 
 Building:
 
