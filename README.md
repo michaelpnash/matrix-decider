@@ -31,4 +31,5 @@ Feedback is most welcome, and I plan a number of new features and extensions to 
 
 Enjoy!
 
+A blog post explaining how and why Matrix Decider was made is now [available here](http://php.jglobal.com/blog/?p=1377)
 
