@@ -133,7 +133,6 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
   }
 
   "The decision repository" - {
-
     "can store a decision and find it by it's identifier" in {
       val user = User("name")
       userRepo.save(user)
@@ -159,6 +158,13 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
       assert(specs.head.id === decision.id)
       assert(specs.size === 1)
       assert(specs.head.name === decision.name)
+    }
+    "can produce a set of sample data for a guest user" in {
+      repo.generateSampleData
+      val decisions = repo.decisionSpecifiersForUser(userRepo.findByName("guest").get.id)
+      assert(decisions.size > 0)
+      val decision = repo.findById(decisions.head.id).get
+      assert(decision.alternatives.size > 0)
     }
   }
 }
