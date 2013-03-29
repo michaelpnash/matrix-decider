@@ -72,4 +72,10 @@ class DecisionRepository @Inject()(decisionDataStore: DecisionDataStore, alterna
     decision.copy(alternatives = decision.alternatives.filter(_.id != alternative.id) + decision.alternative(alternative.id).get.copy(rankings = decision.alternative(alternative.id).get.rankings.filter(_.criteria.id != criteria.id) + Ranking(criteria, ranking)))
   }
 
+  def generateSampleData {
+    val guestUser = userRepository.findByName("guest").getOrElse(userRepository.save(User("guest")))
+    save(Decision(guestUser, Set(Alternative("Ford", Set()), Alternative("GM", Set()), Alternative("Toyota", Set())),
+      Set(Criteria("Price", 5), Criteria("Fuel Economy", 3), Criteria("Warranty", 3)), name = "Buy a Car"))
+  }
+
 }
