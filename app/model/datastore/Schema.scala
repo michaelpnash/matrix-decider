@@ -50,6 +50,7 @@ object Schema {
     def decisionId = column[UUID]("DECISION_ID")
     def id = column[UUID]("ID", O.PrimaryKey)
     def idx = index("idx_alt_name", (name, decisionId), unique = true)
+    def decision = foreignKey("ALT_DECISION", decisionId, Decisions)(_.id)
     def * = name ~ decisionId ~ id <> (AlternativeDTO, AlternativeDTO.unapply _)
   }
 

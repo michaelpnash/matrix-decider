@@ -111,9 +111,31 @@ class DataStoreSpec extends FreeSpec with BeforeAndAfter {
     }
   }
   "The alternatives data store" - {
-    "should insert an alternative and retrieve it by id" in (pending)
-    "should find all alternatives applicable to a decision" in (pending)
-    "should not insert an alternative for an invalid decision" in (pending)
+    "should insert an alternative and retrieve it by id" in {
+      val user = UserDTO(UUID.randomUUID, "name")
+      userDataStore.insert(user)
+      val decisionDto = DecisionDTO(user.id, "name", UUID.randomUUID)
+      decisionDataStore.insert(decisionDto)
+      val alt = AlternativeDTO("alternative", decisionDto.id, UUID.randomUUID)
+      alternativeDataStore.insert(alt)
+      assert(alternativeDataStore.findById(alt.id).get === alt)
+    }
+    "should find all alternatives applicable to a decision" in {
+      val user = UserDTO(UUID.randomUUID, "name")
+      userDataStore.insert(user)
+      val decisionDto = DecisionDTO(user.id, "name", UUID.randomUUID)
+      decisionDataStore.insert(decisionDto)
+      val alt1 = AlternativeDTO("alternative 1", decisionDto.id, UUID.randomUUID)
+      val alt2 = AlternativeDTO("alternative 2", decisionDto.id, UUID.randomUUID)
+      alternativeDataStore.insert(alt1)
+      alternativeDataStore.insert(alt2)
+      assert(alternativeDataStore.findByDecisionId(decisionDto.id).toSet === Set(alt1, alt2))
+    }
+    "should not insert an alternative for an invalid decision" in {
+      intercept[Exception] {
+        alternativeDataStore.insert(AlternativeDTO("alternative 1", UUID.randomUUID, UUID.randomUUID))
+      }
+    }
   }
   "The rankings data store" - {
     "should insert a ranking and retrieve it by alternative id and criteria id" in (pending)

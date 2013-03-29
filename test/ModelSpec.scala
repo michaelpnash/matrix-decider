@@ -57,6 +57,8 @@ class ModelSpec extends FreeSpec with BeforeAndAfter {
         Alternative("gm",
           Set(Ranking(price, 5), Ranking(color, 3))))
       val decision = Decision(User("name"), alternatives, Set(price, color), name = "my name")
+      userRepo.save(decision.user)
+      repo.save(decision)
       val honda = Alternative("honda", Set())
       val modified = decision.withNewAlternative(honda)
       assert(modified.alternatives.map(_.id).contains(honda.id))
