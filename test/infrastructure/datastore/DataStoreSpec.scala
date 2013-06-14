@@ -1,4 +1,4 @@
-package model.datastore
+package infrastructure.datastore
 
 import infrastructure.Global
 import java.util.UUID

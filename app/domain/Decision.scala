@@ -39,5 +39,3 @@ case class Alternative(name: String, rankings: Set[Ranking], id: UUID = UUID.ran
 }
 
 case class Ranking(criteria: Criteria, rank: Int)
-
-case class User(name: String, id: UUID = UUID.randomUUID)
