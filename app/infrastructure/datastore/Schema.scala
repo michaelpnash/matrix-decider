@@ -1,4 +1,4 @@
-package model.datastore
+package infrastructure.datastore
 
 import scala.slick.driver.HsqldbDriver.simple._
 import scala.slick.jdbc.{GetResult, StaticQuery}

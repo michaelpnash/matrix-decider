@@ -1,10 +1,9 @@
+package model.datastore
+
+import infrastructure.Global
 import java.util.UUID
-import model.datastore._
-import model.datastore.Schema.AlternativeDTO
-import model.datastore.Schema.CriteriaDTO
-import model.datastore.Schema.DecisionDTO
-import model.datastore.Schema.UserDTO
-import model.datastore.Schema.{AlternativeDTO, CriteriaDTO, UserDTO, DecisionDTO}
+import infrastructure.datastore._
+import infrastructure.datastore.Schema._
 import org.scalatest.{BeforeAndAfter, FreeSpec}
 import scala.slick.session.{Database, Session}
 

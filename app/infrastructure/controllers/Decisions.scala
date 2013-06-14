@@ -6,10 +6,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import com.google.inject.{Inject, Singleton}
-import model._
+import domain._
 import java.util.UUID
-import model.Alternative
-import model.Decision
 
 case class NewDecisionView(name: String)
 case class DecisionView(alternativeName: Option[String], criteriaName: Option[String], criteriaImportance: Option[Int])

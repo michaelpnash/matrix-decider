@@ -1,4 +1,4 @@
-package model.datastore
+package infrastructure.datastore
 
 import slick.session._
 import collection.mutable.ListBuffer

@@ -1,4 +1,3 @@
-package test
 
 import play.api.test._
 import play.api.test.Helpers._

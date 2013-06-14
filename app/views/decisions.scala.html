@@ -1,4 +1,4 @@
-@(decisions: Seq[model.DecisionSpecifier], decisionForm: play.api.data.Form[controllers.NewDecisionView], userId: java.util.UUID)(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
+@(decisions: Seq[domain.DecisionSpecifier], decisionForm: play.api.data.Form[NewDecisionView], userId: java.util.UUID)(implicit flash: play.api.mvc.Flash, lang: play.api.i18n.Lang)
 
 @import helper._
 
