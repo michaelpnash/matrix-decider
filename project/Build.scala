@@ -9,8 +9,8 @@ object ApplicationBuild extends Build {
 
   val appDependencies = Seq("com.typesafe.slick" %% "slick" % "1.0.0",
     "org.scalatest" %% "scalatest" % "2.0.M5b" % "test",
-    "com.typesafe" %% "scalalogging-slf4j" % "1.0.1"
-
+    "com.typesafe" %% "scalalogging-slf4j" % "1.0.1",
+    "com.jolbox" % "bonecp" % "0.7.1.RELEASE"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
