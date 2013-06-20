@@ -1,8 +1,8 @@
-
 import controllers.Decisions
-import model.datastore.DecisionDataStore
-import model.DecisionRepository
+import infrastructure.datastore.DecisionDataStore
+import domain.DecisionRepository
 import org.scalatest.FreeSpec
+import infrastructure.Global
 
 class ModuleSpec extends FreeSpec {
   "the module" - {
@@ -17,3 +17,4 @@ class ModuleSpec extends FreeSpec {
     }
   }
 }
+

@@ -4,7 +4,7 @@ import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
 import com.google.inject.{Inject, Singleton}
-import model.{User, UserRepository}
+import domain.{User, UserRepository}
 
 case class LoginView(login: String)
 

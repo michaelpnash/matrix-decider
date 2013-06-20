@@ -1,8 +1,10 @@
+package infrastructure
+
 import com.google.inject.{AbstractModule, Guice}
-import model.datastore.Schema
-import model.DecisionRepository
+import domain.DecisionRepository
+import datastore.Schema
 import play.api.GlobalSettings
-import scala.slick.session.{Session, Database}
+import scala.slick.session.{Database, Session}
 
 object Global extends GlobalSettings {
   val injector = Guice.createInjector(new DeciderModule)
@@ -17,7 +19,7 @@ object Global extends GlobalSettings {
 class DeciderModule extends AbstractModule {
   val dbSuffix = System.getProperty("db", "mem:testdb")
   val dbUrl = "jdbc:hsqldb:" + dbSuffix
-
+  
   override def configure() {
     bind(classOf[Database]).toInstance(Database.forURL(dbUrl, driver = "org.hsqldb.jdbc.JDBCDriver"))
     bind(classOf[String]).toInstance("foo")

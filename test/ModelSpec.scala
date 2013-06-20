@@ -1,11 +1,8 @@
-import model._
-import model.Alternative
-import model.Criteria
-import model.datastore.{CriteriaDataStore, RankingDataStore, AlternativeDataStore, Schema}
-import model.Decision
-import model.User
+import domain._
+import infrastructure.datastore.{CriteriaDataStore, RankingDataStore, AlternativeDataStore, Schema}
 import org.scalatest.{BeforeAndAfter, FreeSpec}
 import scala.slick.session.Database
+import infrastructure.Global
 
 class ModelSpec extends FreeSpec with BeforeAndAfter {
   implicit val repo = Global.injector.getInstance(classOf[DecisionRepository])

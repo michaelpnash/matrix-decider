@@ -1,4 +1,4 @@
-package model.datastore
+package infrastructure.datastore
 
 import scala.slick.jdbc.{GetResult, StaticQuery}
 import scala.slick.jdbc.StaticQuery.interpolation

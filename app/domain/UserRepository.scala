@@ -1,8 +1,8 @@
-package model
+package domain
 
 import com.google.inject.{Inject, Singleton}
-import model.datastore.UserDataStore
-import model.datastore.Schema.UserDTO
+import infrastructure.datastore.UserDataStore
+import infrastructure.datastore.Schema.UserDTO
 import scala.slick.session.{Database, Session}
 import java.util.UUID
 

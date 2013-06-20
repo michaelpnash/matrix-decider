@@ -1,9 +1,9 @@
-package model
+package domain
 
 import java.util.UUID
 import com.google.inject.{Inject, Singleton}
-import model.datastore.{RankingDataStore, CriteriaDataStore, AlternativeDataStore, DecisionDataStore}
-import model.datastore.Schema.{RankingDTO, CriteriaDTO, AlternativeDTO, DecisionDTO}
+import infrastructure.datastore.{RankingDataStore, CriteriaDataStore, AlternativeDataStore, DecisionDataStore}
+import infrastructure.datastore.Schema.{RankingDTO, CriteriaDTO, AlternativeDTO, DecisionDTO}
 import scala.slick.session.{Database, Session}
 import play.api.Logger
 
