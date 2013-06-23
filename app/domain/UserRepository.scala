@@ -5,19 +5,22 @@ import infrastructure.datastore.UserDataStore
 import infrastructure.datastore.Schema.UserDTO
 import scala.slick.session.{Database, Session}
 import java.util.UUID
+import javax.sql.DataSource
 
 @Singleton
-class UserRepository @Inject()(userDataStore: UserDataStore, database: Database) {
+class UserRepository @Inject()(userDataStore: UserDataStore, dataStore: DataSource) {
 
-  implicit val session: Session = database.createSession
-
+  val database = Database.forDataSource(dataStore)
+  
   def save(user: User): User = {
-    userDataStore.insert(UserDTO(user.id, user.name.toString))
+    database withTransaction { implicit session: Session =>
+      userDataStore.insert(UserDTO(user.id, user.name.toString))
+    }
     user
   }
-  def findByName(name: String): Option[User] = userDataStore.findByName(name).map(dto => User(dto.name, dto.id))
+  def findByName(name: String): Option[User] = database withSession { implicit session => userDataStore.findByName(name).map(dto => User(dto.name, dto.id)) }
 
-  def clear = userDataStore.clear
+  def clear = database withTransaction { implicit session: Session => userDataStore.clear }
 
-  def findById(id: UUID): Option[User] = userDataStore.findById(id).map(dto => User(dto.name, dto.id))
+  def findById(id: UUID): Option[User] = database withSession { implicit session => userDataStore.findById(id).map(dto => User(dto.name, dto.id)) }
 }

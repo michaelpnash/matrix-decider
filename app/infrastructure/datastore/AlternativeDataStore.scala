@@ -19,3 +19,11 @@ class AlternativeDataStore @Inject()() extends SQLDataStore[AlternativeDTO] {
 
   def clear(implicit session: Session) { Query(Alternatives).delete }
 }
+
+
+
+
+
+
+
+

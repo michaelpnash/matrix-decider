@@ -7,9 +7,10 @@ import slick.session.Session
 import com.google.inject.{Inject, Singleton}
 import Schema._
 import java.util.UUID
+import javax.sql.DataSource
 
 @Singleton
-class CriteriaDataStore @Inject()() extends SQLDataStore[CriteriaDTO] {
+class CriteriaDataStore @Inject()(dataSource: DataSource) extends SQLDataStore[CriteriaDTO] {
   def insert(dto: CriteriaDTO)(implicit session: Session) = Criteria.insert(dto)
 
   def findById(id: UUID)(implicit session: Session) = Query(Criteria).filter(_.id === id.bind).firstOption
