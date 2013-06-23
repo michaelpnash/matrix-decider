@@ -20,15 +20,16 @@ class DeciderModule extends AbstractModule {
   val dbSuffix = System.getProperty("db", "mem:testdb")
   val dbUrl = "jdbc:hsqldb:" + dbSuffix
 
-  import com.jolbox.bonecp.BoneCPDataSource
+//  import com.jolbox.bonecp.BoneCPDataSource
   
-  val ds = new BoneCPDataSource
-  ds.setDriverClass("org.hsqldb.jdbc.JDBCDriver")
-  ds.setJdbcUrl(dbUrl)
-  ds.setAcquireIncrement(5)
+//  val ds = new BoneCPDataSource
+//  ds.setDriverClass("org.hsqldb.jdbc.JDBCDriver")
+//  ds.setJdbcUrl(dbUrl)
+//  ds.setAcquireIncrement(5)
 
   override def configure() {
-    bind(classOf[Database]).toInstance(Database.forDataSource(ds))
+    //bind(classOf[Database]).toInstance(Database.forDataSource(ds))
+    bind(classOf[Database]).toInstance(Database.forURL(dbUrl))
     bind(classOf[String]).toInstance("foo")
   }
 }
